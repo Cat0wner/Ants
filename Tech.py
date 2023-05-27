@@ -91,13 +91,13 @@ def CanIOpenThisTech(TechID, Food=0, Ants=[0,0,0,0]): # All, Worker Scout Solder
     global TechLevel
     #print("CanIOpenThisTech")
     TheTech = Tech[TechID]
+    if IsTechOpen(TechID) == 1: return -2
     if TheTech["TechCost"] < Food:
         if (TheTech["AntsRequired"][0] <= Ants[0] and TheTech["AntsRequired"][1] <= Ants[1]) and (TheTech["AntsRequired"][2] <= Ants[2] and TheTech["AntsRequired"][3] <= Ants[3]):
-            if IsTechOpen(TechID) != 1:
-                for ReqTech in TheTech["TechRequired"]:
-                    if IsTechOpen(ReqTech) != 1:
-                        return -1
-                return TheTech["TechCost"] # Возращаем стоимость в еде, да-да. 
+            for ReqTech in TheTech["TechRequired"]:
+                if IsTechOpen(ReqTech) != 1:
+                    return -1
+            return TheTech["TechCost"] # Возращаем стоимость в еде, да-да. 
     return -1
 # В main мы тыкаем кнопку технологии
 # Вызывается CanIOpenThisTech

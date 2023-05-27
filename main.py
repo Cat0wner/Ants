@@ -68,24 +68,51 @@ def UpdateAntButtons():
     if AntsResearched["Watcher1"]: ButtonScout.configure(text = AntScoutText)
     #print(AntsResearched)
     
+def UpdateTechTreeButtons():
+    global TechTreeButtons
+    TechList = Tech.ReturnListOfTech()
+    for TechID in TechList:
+        Foods = World.HomeFood()
+        colornum = Tech.CanIOpenThisTech(TechID, Foods)
+        if colornum >= 0: colornum = 1
+        print(f"{TechID} : {colornum}")
+        TechTreeButtons[TechID].configure(image = BtnsTchBeLike[colornum])
+        
+        
 
 def CreateTechTreeButtons():
     #print("CreateTechTreeButtons")
     global TechTreeButtons
+    global TechTreeImgs
+    global TechTreeImgs
     global TechTreeFrame
+    MaxW = 1
+    MaxH = 1
     TechTreeButtons.clear()
+    TechTreeImgs.clear()
     TechList = Tech.ReturnListOfTech()
     for TechID in TechList:
         Technology = TechList[TechID]
-        if Technology["IsOpened"]: color = "green"
-        elif Technology["TechLevel"] <= Tech.ReturnTechLevel(): color = "yellow"
-        else: color ="red"
-        TechTreeButtons.update({TechID: Frame(master=TechTreeFrame, width=180, height=100, bg = color)})
+        Foods = World.HomeFood()
+        colornum = Tech.CanIOpenThisTech(TechID, Foods)
+        if colornum >= 0: colornum = 1
+        TechTreeButtons.update({TechID: Frame(master=TechTreeFrame, width=200, height=100, bg = "yellow")})
+        TechTreeImgs.update({TechID: Label(master = TechTreeButtons[TechID], image = BtnsTchBeLike[colornum], width=200, height=100)})
         TechTreeButtons[TechID].bind("<Button-1>", lambda event, ID = TechID: TechButtonClick(ID))
-        Label(master=TechTreeButtons[TechID], text=Technology["TechName"], font=("ComicSansMS", 14, "bold")).pack(padx=5, pady=5)#.pack(fill=None, expand=True)
-        Label(master=TechTreeButtons[TechID], text=Technology["Description"], font=("ComicSansMS", 10, "bold")).pack(padx=5, pady=5)#.pack(fill=None, expand=True)
+        TechTreeImgs[TechID].place(x=0, y=0)
+        Label(master=TechTreeButtons[TechID], text=Technology["TechName"], font=("ComicSansMS", 14, "bold")).pack()#.pack(fill=None, expand=True)
+        Label(master=TechTreeButtons[TechID], text=Technology["Description"], font=("ComicSansMS", 10, "bold")).pack()#.pack(fill=None, expand=True)
         for child in TechTreeButtons[TechID].winfo_children(): child.bind("<Button-1>", lambda event, ID = TechID: TechButtonClick(ID))
-        TechTreeButtons[TechID].grid(column=Technology["Column"], row=Technology["Row"], padx=5, pady=5, sticky =EW )
+        #TechTreeButtons[TechID].grid(column=Technology["Column"], row=Technology["Row"], sticky='nsew' )#ipadx = 10, ipady = 20, padx = 5, pady = 5)
+        #TechTreeImgs.grid_propagate(0)
+        TechTreeButtons[TechID].place(x=Technology["Column"] * 210, y= Technology["Row"]* 110, anchor="nw", width=200, height=100)
+        if MaxW <= Technology["Column"]: MaxW = Technology["Column"] +1
+        if MaxH <= Technology["Row"]: MaxH = Technology["Row"] +1
+        mainwindow.update()
+        print(f"{TechID} : {TechTreeButtons[TechID].winfo_geometry()}\n")
+        print(Technology["Column"])
+        print(Technology["Row"])
+    return [MaxW*210, MaxH*110]
         
 
 def TechButtonClick(TechID):
@@ -95,11 +122,12 @@ def TechButtonClick(TechID):
     Antsct = Ants.ReturnAntsCount()
     Foods = World.HomeFood()
     CanI = Tech.CanIOpenThisTech(TechID, Foods, [Antsct["All"], Antsct["Worker"], Antsct["Watcher"], Antsct["Solder"]])
-    if CanI != -1:
+    if CanI >= 0:
         World.StealFood(CanI)
         Tech.OpenThisTechPls(TechID)
-        TechTreeButtons[TechID].configure(bg="green")
+        #TechTreeButtons[TechID].configure(bg="green")
         # Change image for button
+    #UpdateTechTreeButtons()
     AntsResearched = Tech.GetUnlockedAnts()
     UpdateHome()
     UpdateFood()
@@ -121,16 +149,18 @@ def CreateTechTree():
     TechTreeFrame = Frame(master = BigTechFrame, bg="#F0F8FF") # pls delete them python thnks gj love u
     TechTreeFrame.bind("<Button-1>", TechDragStart)
     TechTreeFrame.bind("<ButtonRelease-1>", TechDragMove)
-    CreateTechTreeButtons()
-    TechTreeFrame.place(relx=.5, rely=.0, anchor = "n")
+    MaxWH = CreateTechTreeButtons()
+    TechTreeFrame.place(relx=0.5, y=0, anchor = "n", width=MaxWH[0], height=MaxWH[1])
     CloseTech.place(anchor=NE, relx=1.0, rely=.0)
+    mainwindow.update()
+    print(TechTreeFrame.winfo_geometry())
     
 def ShowTech():
     #print("ShowTech")
     global BigTechFrame
     SetPause(True, True)
     CreateTechTree()
-    BigTechFrame.place(relx=.5, rely=.5, anchor = "center")
+    BigTechFrame.place(relx=.5, rely=.5, anchor = "center", width = 700, height =500)
     
 def HideTech():
     #print("HideTech")
@@ -155,7 +185,9 @@ def RandomFoodAppear():
 
 def UpdateFood():
     global FoodCount
-    FoodCount.configure(text="Еда: "+str(World.HomeFood()))
+    global FoodCounter
+    FoodCounter = World.HomeFood()
+    FoodCount.configure(text="Еда: "+str(FoodCounter))
 
 def SolderButton():
     if AntsResearched["Solder1"] == 1:
@@ -843,7 +875,11 @@ def TechDragStart(event): pass
     #print("TechDragStart")
 def TechDragMove(event): pass
     #print("TechDragMove")
+    
+    
 # Params
+TechColors = {-2: "green", -1: "red", 1: "yellow"}
+FoodCounter = 0
 AntsResearched = Tech.GetUnlockedAnts()
 TileType = "Grass"
 HomeRendered = 0
@@ -982,6 +1018,13 @@ AntTextures = {110: AntToDownImg.subsample(2,2),
 302: AntToRightImg.subsample(3,3),
 301: AntToLeftImg.subsample(3,3) }
 
+#btnstech
+OpenTechButton = PhotoImage(file="imgs/Open200x100.png")
+ClosedTechButton = PhotoImage(file="imgs/Closed200x100.png")
+BlockedTechButton = PhotoImage(file="imgs/Blocked200x100.png")
+BtnsTchBeLike = {-2: OpenTechButton, -1: ClosedTechButton, 1: BlockedTechButton}
+#btnstech
+
 # Menu
 MenuFrame = Frame(master=mainwindow, width=200, height=200)
 MenuLabel = Label(master=MenuFrame, image = AntToUpImg, compound="left", text="ANTS", font=("ComicSansMS", 40, "bold"))
@@ -1077,9 +1120,10 @@ NeutralButton.grid(column=2, row=1)
 #Attack & Defend End
 
 #TechTreeFrame
+TechTreeImgs = {}
 TechTreeButtons = {}
 BigTechFrame = Frame(master = mainwindow, bg="#F0F8FF", width = 700, height = 500)
-TechTreeFrame = Frame(master = BigTechFrame, bg="#F0F8FF")
+TechTreeFrame = Frame(master = BigTechFrame, bg="red")
 TechTreeFrame.bind("<Button-1>", TechDragStart)
 TechTreeFrame.bind("<ButtonRelease-1>", TechDragMove)
 CloseTech = Button(master = BigTechFrame, text = "X", command=HideTech)
