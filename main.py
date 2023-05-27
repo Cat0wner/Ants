@@ -69,21 +69,19 @@ def UpdateAntButtons():
     #print(AntsResearched)
     
 def UpdateTechTreeButtons():
-    global TechTreeButtons
+    global TechTreeImgs
     TechList = Tech.ReturnListOfTech()
     for TechID in TechList:
         Foods = World.HomeFood()
         colornum = Tech.CanIOpenThisTech(TechID, Foods)
         if colornum >= 0: colornum = 1
-        print(f"{TechID} : {colornum}")
-        TechTreeButtons[TechID].configure(image = BtnsTchBeLike[colornum])
+        TechTreeImgs[TechID].configure(image = BtnsTchBeLike[colornum])
         
         
 
 def CreateTechTreeButtons():
     #print("CreateTechTreeButtons")
     global TechTreeButtons
-    global TechTreeImgs
     global TechTreeImgs
     global TechTreeFrame
     MaxW = 1
@@ -99,9 +97,9 @@ def CreateTechTreeButtons():
         TechTreeButtons.update({TechID: Frame(master=TechTreeFrame, width=200, height=100, bg = "yellow")})
         TechTreeImgs.update({TechID: Label(master = TechTreeButtons[TechID], image = BtnsTchBeLike[colornum], width=200, height=100)})
         TechTreeButtons[TechID].bind("<Button-1>", lambda event, ID = TechID: TechButtonClick(ID))
-        TechTreeImgs[TechID].place(x=0, y=0)
-        Label(master=TechTreeButtons[TechID], text=Technology["TechName"], font=("ComicSansMS", 14, "bold")).pack()#.pack(fill=None, expand=True)
-        Label(master=TechTreeButtons[TechID], text=Technology["Description"], font=("ComicSansMS", 10, "bold")).pack()#.pack(fill=None, expand=True)
+        TechTreeImgs[TechID].place(x=0, y=0, anchor="nw")
+        Label(master=TechTreeButtons[TechID], text=Technology["TechName"]+" ("+str(Technology["TechCost"])+")", font=("ComicSansMS", 12, "bold")).place(x=21, y=17, anchor="nw", height=21, width=160)#.pack(fill=None, expand=True)
+        Label(master=TechTreeButtons[TechID], text=Technology["Description"], font=("ComicSansMS", 8, "bold")).place(x=21, y=45, anchor="nw", height=41, width=160)#.pack(fill=None, expand=True)
         for child in TechTreeButtons[TechID].winfo_children(): child.bind("<Button-1>", lambda event, ID = TechID: TechButtonClick(ID))
         #TechTreeButtons[TechID].grid(column=Technology["Column"], row=Technology["Row"], sticky='nsew' )#ipadx = 10, ipady = 20, padx = 5, pady = 5)
         #TechTreeImgs.grid_propagate(0)
@@ -109,9 +107,9 @@ def CreateTechTreeButtons():
         if MaxW <= Technology["Column"]: MaxW = Technology["Column"] +1
         if MaxH <= Technology["Row"]: MaxH = Technology["Row"] +1
         mainwindow.update()
-        print(f"{TechID} : {TechTreeButtons[TechID].winfo_geometry()}\n")
-        print(Technology["Column"])
-        print(Technology["Row"])
+        #print(f"{TechID} : {TechTreeButtons[TechID].winfo_geometry()}\n")
+        #print(Technology["Column"])
+        #print(Technology["Row"])
     return [MaxW*210, MaxH*110]
         
 
@@ -127,7 +125,7 @@ def TechButtonClick(TechID):
         Tech.OpenThisTechPls(TechID)
         #TechTreeButtons[TechID].configure(bg="green")
         # Change image for button
-    #UpdateTechTreeButtons()
+    UpdateTechTreeButtons()
     AntsResearched = Tech.GetUnlockedAnts()
     UpdateHome()
     UpdateFood()
@@ -153,11 +151,11 @@ def CreateTechTree():
     TechTreeFrame.place(relx=0.5, y=0, anchor = "n", width=MaxWH[0], height=MaxWH[1])
     CloseTech.place(anchor=NE, relx=1.0, rely=.0)
     mainwindow.update()
-    print(TechTreeFrame.winfo_geometry())
     
 def ShowTech():
     #print("ShowTech")
     global BigTechFrame
+    HideMiniMenu()
     SetPause(True, True)
     CreateTechTree()
     BigTechFrame.place(relx=.5, rely=.5, anchor = "center", width = 700, height =500)
@@ -443,6 +441,7 @@ def ShowMiniMenu():
     #print("ShowMiniMenu")
     global MiniMenu
     global MainWindow
+    HideTech()
     MiniMenu.place(relx=.5, rely=.5,anchor= CENTER)
     SetPause(True, True)
     
