@@ -55,17 +55,67 @@ def UpdateHome():
     GameCanvas.itemconfigure(HomeRendered, image=HomesImgs[TechLevel])
     
     
-
+# eto кошмар.
+# просто ужасно
 def UpdateAntButtons():
     #print("UpdateAntButtons")
     global ButtonSolder
     global ButtonScout
     global ButtonWorker
     global AntsResearched
+    global TechLevelChoosen
     AntsResearched = Tech.GetUnlockedAnts()
-    if AntsResearched["Solder1"]: ButtonSolder.configure(text = AntSolderText)
-    if AntsResearched["Worker1"]: ButtonWorker.configure(text = AntWorkerText)
-    if AntsResearched["Watcher1"]: ButtonScout.configure(text = AntScoutText)
+    if TechLevelChoosen == 1:
+    
+        if AntsResearched["Solder1"]:
+            ButtonSolder.configure(text = AntSolderText) 
+        else:
+            ButtonWorker.configure(text = NEDOSTUPNO)
+            
+        if AntsResearched["Worker1"]:
+            ButtonWorker.configure(text = AntWorkerText) 
+        else:
+            ButtonWorker.configure(text = NEDOSTUPNO)
+            
+        if AntsResearched["Watcher1"]:
+            ButtonScout.configure(text = AntScoutText) 
+        else:
+            ButtonScout.configure(text = NEDOSTUPNO)
+            
+    if TechLevelChoosen == 2:
+    
+        if AntsResearched["Solder2"]:
+            ButtonSolder.configure(text = AntSolderText2) 
+        else:
+            ButtonWorker.configure(text = NEDOSTUPNO)
+            
+        if AntsResearched["Worker2"]:
+            ButtonWorker.configure(text = AntWorkerText2) 
+        else:
+            ButtonWorker.configure(text = NEDOSTUPNO)
+            
+        if AntsResearched["Watcher2"]:
+            ButtonScout.configure(text = AntScoutText2) 
+        else:
+            ButtonScout.configure(text = NEDOSTUPNO)
+            
+    if TechLevelChoosen == 3:
+    
+        if AntsResearched["Solder3"]:
+            ButtonSolder.configure(text = AntSolderText3) 
+        else:
+            ButtonWorker.configure(text = NEDOSTUPNO)
+            
+        if AntsResearched["Worker3"]:
+            ButtonWorker.configure(text = AntWorkerText3) 
+        else:
+            ButtonWorker.configure(text = NEDOSTUPNO)
+            
+        if AntsResearched["Watcher3"]:
+            ButtonScout.configure(text = AntScoutText3) 
+        else:
+            ButtonScout.configure(text = NEDOSTUPNO)
+            
     #print(AntsResearched)
     
 def UpdateTechTreeButtons():
@@ -188,18 +238,24 @@ def UpdateFood():
     FoodCount.configure(text="Еда: "+str(FoodCounter))
 
 def SolderButton():
-    if AntsResearched["Solder1"] == 1:
-        Ants.CreateAnt(0, AntSolder[0], AntSolder[1], AntSolder[2])
+    global TechLevelChoosen
+    tch = TechLevelChoosen - 1
+    if AntsResearched["Solder1"] == 1 and TechLevelChoosen <= Tech.ReturnTechLevel():
+        Ants.CreateAnt(0, AntSolder[tch][0], AntSolder[tch][1], AntSolder[tch][2], TechLevel = TechLevelChoosen)
     UpdateFood()
 
 def ScoutButton():
-    if AntsResearched["Watcher1"] == 1:
-        Ants.CreateAnt(0, AntScout[0], AntScout[1], AntScout[2])
+    global TechLevelChoosen
+    tch = TechLevelChoosen - 1
+    if AntsResearched["Watcher1"] == 1 and TechLevelChoosen <= Tech.ReturnTechLevel():
+        Ants.CreateAnt(0, AntScout[tch][0], AntScout[tch][1], AntScout[tch][2], TechLevel = Tech.ReturnTechLevel())
     UpdateFood()
 
 def WorkerButton():
-    if AntsResearched["Worker1"] == 1:
-        Ants.CreateAnt(0, AntWorker[0], AntWorker[1], AntWorker[2])
+    global TechLevelChoosen
+    tch = TechLevelChoosen - 1
+    if AntsResearched["Worker1"] == 1 and TechLevelChoosen <= Tech.ReturnTechLevel():
+        Ants.CreateAnt(0, AntWorker[tch][0], AntWorker[tch][1], AntWorker[tch][2], TechLevel = Tech.ReturnTechLevel())
     UpdateFood()
     
 def ObjectClearing():
@@ -232,7 +288,7 @@ def SaveSaver(SaveName = "Save"):
         HomesSaveData.append([Home.posx, Home.posy, Home.Food, Home.AntsIDs])
     for ID in AntsToSave:
         Ant = AntsToSave[ID]
-        AntsSaveData.append([Ant.posx, Ant.posy, Ant.HBB, Ant.HomeID, Ant.ID, Ant.Health, Ant.Energy, Ant.Memory, Ant.FoodMemory, Ant.MemoryAnt, Ant.Inventory, Ant.TargetPoint, Ant.Speed, Ant.MaxHealth, Ant.AttackStrenght])
+        AntsSaveData.append([Ant.posx, Ant.posy, Ant.HBB, Ant.HomeID, Ant.ID, Ant.Health, Ant.Energy, Ant.Memory, Ant.FoodMemory, Ant.MemoryAnt, Ant.Inventory, Ant.TargetPoint, Ant.Speed, Ant.MaxHealth, Ant.AttackStrenght, Ant.TechLevel])
     for ID in BugsToSave:
         Bug = BugsToSave[ID]
         BugsSaveData.append([Bug.posx, Bug.posy, Bug.ID, Bug.Health])
@@ -289,8 +345,8 @@ def SaveLoader(Filedir):
         #print(f"Home is {Home}")
         #print(Home[2])
         World.CreateHome(Home[0], Home[1], SetAll = True, AntsIDs = Home[3], Foods=Home[2])
-    for Ant in LoadAnts: # [Ant.posx, Ant.posy, Ant.HBB, Ant.HomeID, Ant.ID, Ant.Health, Ant.Energy, Ant.Memory, Ant.FoodMemory, Ant.MemoryAnt, Ant.Inventory, Ant.TargetPoint]
-        Ants.CreateAnt(Ant[3], Ant[2][0], Ant[2][1], Ant[2][2], SetAll = True, ID=Ant[4], x = Ant[0], y = Ant[1], Stats = [Ant[5], Ant[6], Ant[7], Ant[8], Ant[9], Ant[10], Ant[11], Ant[12], Ant[13], Ant[14]])
+    for Ant in LoadAnts: # [Ant.posx, Ant.posy, Ant.HBB, Ant.HomeID, Ant.ID, Ant.Health, Ant.Energy, Ant.Memory, Ant.FoodMemory, Ant.MemoryAnt, Ant.Inventory, Ant.TargetPoint, Ant.Speed, Ant.MaxHealth, Ant.AttackStrenght, Ant.TechLevel]
+        Ants.CreateAnt(Ant[3], Ant[2][0], Ant[2][1], Ant[2][2], SetAll = True, ID=Ant[4], x = Ant[0], y = Ant[1], Stats = [Ant[5], Ant[6], Ant[7], Ant[8], Ant[9], Ant[10], Ant[11], Ant[12], Ant[13], Ant[14]], TechLevel = Ant[15])
     for Bug in LoadBugs:
         Ants.CreateBug(SetAll = True, ID=Bug[2], PosX=Bug[0], PosY=Bug[1], Health=Bug[3])
     for Food in LoadFoods:
@@ -875,8 +931,13 @@ def TechDragStart(event): pass
 def TechDragMove(event): pass
     #print("TechDragMove")
     
+def ButtonTechClick(TechLevel):
+    global TechLevelChoosen
+    TechLevelChoosen = TechLevel
+    UpdateAntButtons()
     
 # Params
+TechLevelChoosen = 1
 TechColors = {-2: "green", -1: "red", 1: "yellow"}
 FoodCounter = 0
 AntsResearched = Tech.GetUnlockedAnts()
@@ -912,16 +973,29 @@ BugsRendered = {}
 DeleteAnts = []
 DeleteFoods = []
 DeleteBugs = []
-AntsHeads = [["default", 1, 1, 1, 1, 1, 1], ["Solder", 6, 5, 2, 4, 8, 1], ["Worker", 1, 1, 1, 2, 2, 3], ["Watcher", 0, 1, 1, 1, 1, 1, 1]] # Name, HealthBonus, Attack, AttackRange, Cost, EnergyNeed, WorkEfficiency
-AntsBodies = [["default", 1, 2, 2, 1], ["armored", 6, 1, 12, 4], ["scout", 1, 4, 4, 3] ] # Name, HealthBonus, SpeedBonus, Cost, EnergyNeed
-AntsBellies = [["default", 1, 100, 0], ["light", -1, 80, 1], ["worker", 0, 200, 0], ["heavy", 4, 500, -2]] # Name, HealthBonus, EnergyStorage, SpeedBonus
+AntsHeads = [["default", 1, 1, 1, 1, 1, 1], ["Solder", 6, 5, 2, 4, 8, 1], ["Worker", 1, 1, 1, 2, 2, 3], ["Watcher", 0, 1, 1, 1, 1, 1, 1], ["Solder", 10, 6, 2, 5, 10, 1], ["Worker", 2, 2, 1, 5, 3, 5], ["Watcher", 0, 1, 1, 1, 2, 1, 1]] # Name, HealthBonus, Attack, AttackRange, Cost, EnergyNeed, WorkEfficiency
+AntsBodies = [["default", 1, 2, 2, 1], ["armored", 6, 1, 12, 4], ["scout", 1, 4, 4, 3], ["worker2", 3, 2, 3, 2], ["scout2", 1, 6, 10, 6], ["solder3", 20, 1, 25, 10], ["worker3", 4, 3, 5, 3], ["scout3", 2, 7, 15, 7]] # Name, HealthBonus, SpeedBonus, Cost, EnergyNeed
+AntsBellies = [["default", 1, 1000, 0], ["light", -1, 1400, 1], ["worker", 0, 3000, 0], ["heavy", 4, 5000, -1], ["Solder2", 10, 7000, 0]] # Name, HealthBonus, EnergyStorage, SpeedBonus
 States = ["default","Attack","Defend","Scout", "FoodFound","CreatingWay", "Worker", "GoingWay", "WhereFood","NoFood","YesFood", "TakeFood", "InHome", "Solder", "NeedFood", "Lost"]
-AntSolder = [1, 1, 3]
-AntWorker = [2, 0, 2]
-AntScout = [3, 2, 1]
+AntSolder = [[1, 1, 3] , [4, 1, 5] , [4, 5, 5]]
+AntWorker = [[2, 0, 2] , [5, 3, 2] , [5, 6, 2]]
+AntScout = [[3, 2, 1] , [6, 4, 1] ,  [6, 7, 1]]
+AntSolder2 = [4, 1, 5]
+AntWorker2 = [5, 3, 2]
+AntScout2 = [6, 4, 1]
+AntSolder3 = [4, 5, 5]
+AntWorker3 = [5, 6, 2]
+AntScout3 = [6, 7, 1]
+
 SolderCost = AntsHeads[1][4] + AntsBodies[1][3]
-ScoutCost = AntsHeads[3][4] + AntsBodies[2][3]
 WorkerCost = AntsHeads[2][4] + AntsBodies[0][3]
+ScoutCost = AntsHeads[3][4] + AntsBodies[2][3]
+SolderCost2 = AntsHeads[4][4] + AntsBodies[1][3]
+WorkerCost2 = AntsHeads[5][4] + AntsBodies[3][3]
+ScoutCost2 = AntsHeads[6][4] + AntsBodies[4][3]
+SolderCost3 = AntsHeads[4][4] + AntsBodies[5][3]
+WorkerCost3 = AntsHeads[5][4] + AntsBodies[6][3]
+ScoutCost3 = AntsHeads[6][4] + AntsBodies[7][3]
 NEDOSTUPNO = "НЕДОСТУПНО"
 
 # GUI PART
@@ -932,6 +1006,9 @@ mainwindow.title("Ants")
 mainwindow.iconbitmap("imgs/anticon.ico")
 #mainwindow.attributes("-fullscreen", 1)
 
+# Как будут текстурки - добавить улучшенных муравьёв
+
+# LVL 1
 AntToLeftImg = PhotoImage(file="imgs/antleft.png")
 AntToUpImg = PhotoImage(file="imgs/antup.png")
 AntToRightImg = PhotoImage(file="imgs/antright.png")
@@ -949,6 +1026,44 @@ SAntToUpLeftImg = PhotoImage(file="imgs/Santupleft.png")
 SAntToUpRightImg = PhotoImage(file="imgs/Santupright.png")
 SAntToDownRightImg = PhotoImage(file="imgs/Santdownright.png")
 SAntToDownLeftImg = PhotoImage(file="imgs/Santdownleft.png")
+
+# LVL 2
+AntToLeftImg2 = PhotoImage(file="imgs/scoutleft_t2.png")
+AntToUpImg2 = PhotoImage(file="imgs/scoutup_t2.png")
+AntToRightImg2 = PhotoImage(file="imgs/scoutright_t2.png")
+AntToDownImg2 = PhotoImage(file="imgs/scoutdown_t2.png")
+AntToUpLeftImg2 = PhotoImage(file="imgs/scoutupleft_t2.png")
+AntToUpRightImg2 = PhotoImage(file="imgs/scoutupright_t2.png")
+AntToDownRightImg2 = PhotoImage(file="imgs/scoutdownright_t2.png")
+AntToDownLeftImg2 = PhotoImage(file="imgs/scoutdownleft_t2.png")
+
+SAntToLeftImg2 = PhotoImage(file="imgs/Santleft_t2.png")
+SAntToUpImg2 = PhotoImage(file="imgs/Santup_t2.png")
+SAntToRightImg2 = PhotoImage(file="imgs/Santright_t2.png")
+SAntToDownImg2 = PhotoImage(file="imgs/Santdown_t2.png")
+SAntToUpLeftImg2 = PhotoImage(file="imgs/Santupleft_t2.png")
+SAntToUpRightImg2 = PhotoImage(file="imgs/Santupright_t2.png")
+SAntToDownRightImg2 = PhotoImage(file="imgs/Santdownright_t2.png")
+SAntToDownLeftImg2 = PhotoImage(file="imgs/Santdownleft_t2.png")
+
+# LVL 3
+AntToLeftImg3 = PhotoImage(file="imgs/scoutleft_t3.png")
+AntToUpImg3 = PhotoImage(file="imgs/scoutup_t3.png")
+AntToRightImg3 = PhotoImage(file="imgs/scoutright_t3.png")
+AntToDownImg3 = PhotoImage(file="imgs/scoutdown_t3.png")
+AntToUpLeftImg3 = PhotoImage(file="imgs/scoutupleft_t3.png")
+AntToUpRightImg3 = PhotoImage(file="imgs/scoutupright_t3.png")
+AntToDownRightImg3 = PhotoImage(file="imgs/scoutdownright_t3.png")
+AntToDownLeftImg3 = PhotoImage(file="imgs/scoutdownleft_t3.png")
+
+SAntToLeftImg3 = PhotoImage(file="imgs/Santleft_t3.png")
+SAntToUpImg3 = PhotoImage(file="imgs/Santup_t3.png")
+SAntToRightImg3 = PhotoImage(file="imgs/Santright_t3.png")
+SAntToDownImg3 = PhotoImage(file="imgs/Santdown_t3.png")
+SAntToUpLeftImg3 = PhotoImage(file="imgs/Santupleft_t3.png")
+SAntToUpRightImg3 = PhotoImage(file="imgs/Santupright_t3.png")
+SAntToDownRightImg3 = PhotoImage(file="imgs/Santdownright_t3.png")
+SAntToDownLeftImg3 = PhotoImage(file="imgs/Santdownleft_t3.png")
 
 BugToUp = PhotoImage(file="imgs/bugup.png")
 BugToDown = PhotoImage(file="imgs/bugdown.png")
@@ -1015,7 +1130,55 @@ AntTextures = {110: AntToDownImg.subsample(2,2),
 322: AntToUpRightImg.subsample(3,3),
 321: AntToUpLeftImg.subsample(3,3),
 302: AntToRightImg.subsample(3,3),
-301: AntToLeftImg.subsample(3,3) }
+301: AntToLeftImg.subsample(3,3),
+1110: AntToDownImg2.subsample(2,2),
+1112: AntToDownRightImg2.subsample(2,2),
+1111: AntToDownLeftImg2.subsample(2,2),
+1120: AntToUpImg2.subsample(2,2),
+1122: AntToUpRightImg2.subsample(2,2),
+1121: AntToUpLeftImg2.subsample(2,2),
+1102: AntToRightImg2.subsample(2,2),
+1101: AntToLeftImg2.subsample(2,2),
+1210: SAntToDownImg2.subsample(2,2),
+1212: SAntToDownRightImg2.subsample(2,2),
+1211: SAntToDownLeftImg2.subsample(2,2),
+1220: SAntToUpImg2.subsample(2,2),
+1222: SAntToUpRightImg2.subsample(2,2),
+1221: SAntToUpLeftImg2.subsample(2,2),
+1202: SAntToRightImg2.subsample(2,2),
+1201: SAntToLeftImg2.subsample(2,2),
+1310: AntToDownImg2.subsample(3,3),
+1312: AntToDownRightImg2.subsample(3,3),
+1311: AntToDownLeftImg2.subsample(3,3),
+1320: AntToUpImg2.subsample(3,3),
+1322: AntToUpRightImg2.subsample(3,3),
+1321: AntToUpLeftImg2.subsample(3,3),
+1302: AntToRightImg2.subsample(3,3),
+1301: AntToLeftImg2.subsample(3,3),
+2110: AntToDownImg3.subsample(2,2),
+2112: AntToDownRightImg3.subsample(2,2),
+2111: AntToDownLeftImg3.subsample(2,2),
+2120: AntToUpImg3.subsample(2,2),
+2122: AntToUpRightImg3.subsample(2,2),
+2121: AntToUpLeftImg3.subsample(2,2),
+2102: AntToRightImg3.subsample(2,2),
+2101: AntToLeftImg3.subsample(2,2),
+2210: SAntToDownImg3.subsample(2,2),
+2212: SAntToDownRightImg3.subsample(2,2),
+2211: SAntToDownLeftImg3.subsample(2,2),
+2220: SAntToUpImg3.subsample(2,2),
+2222: SAntToUpRightImg3.subsample(2,2),
+2221: SAntToUpLeftImg3.subsample(2,2),
+2202: SAntToRightImg3.subsample(2,2),
+2201: SAntToLeftImg3.subsample(2,2),
+2310: AntToDownImg3.subsample(3,3),
+2312: AntToDownRightImg3.subsample(3,3),
+2311: AntToDownLeftImg3.subsample(3,3),
+2320: AntToUpImg3.subsample(3,3),
+2322: AntToUpRightImg3.subsample(3,3),
+2321: AntToUpLeftImg3.subsample(3,3),
+2302: AntToRightImg3.subsample(3,3),
+2301: AntToLeftImg3.subsample(3,3)}
 
 #btnstech
 OpenTechButton = PhotoImage(file="imgs/Open200x100.png")
@@ -1043,7 +1206,22 @@ Pause = False
 AntWorkerText = "Рабочий "+str(WorkerCost)
 AntScoutText = "Разведчик "+str(ScoutCost)
 AntSolderText = "Солдат "+str(SolderCost)
+AntWorkerText2 = "Рабочий2 "+str(WorkerCost2)
+AntScoutText2 = "Разведчик2 "+str(ScoutCost2)
+AntSolderText2 = "Солдат2 "+str(SolderCost2)
+AntWorkerText3 = "Рабочий3 "+str(WorkerCost3)
+AntScoutText3 = "Разведчик3 "+str(ScoutCost3)
+AntSolderText2 = "Солдат3 "+str(SolderCost3)
 GameFrame = Frame(master=mainwindow, width=200, height=40)
+
+FrameTechLevel = Frame(master=GameFrame)
+ButtonTech1 = Button(master=FrameTechLevel, text="1", command=lambda: ButtonTechClick(1))
+ButtonTech2 = Button(master=FrameTechLevel, text="2", command=lambda: ButtonTechClick(2))
+ButtonTech3 = Button(master=FrameTechLevel, text="3", command=lambda: ButtonTechClick(3))
+ButtonTech1.pack()
+ButtonTech2.pack()
+ButtonTech2.pack()
+
 FoodCount = Label(master=GameFrame, text="0", font=("ComicSansMS", 12, "bold"),width=10)
 ButtonWorker = Button(master=GameFrame, text=NEDOSTUPNO,font=("ComicSansMS", 12, "bold"),width=10, command=WorkerButton)
 ButtonScout = Button(master=GameFrame, text=NEDOSTUPNO,font=("ComicSansMS", 12, "bold"),width=10, command=ScoutButton)

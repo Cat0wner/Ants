@@ -8,9 +8,10 @@ from math import sqrt
 from math import acos
 from math import degrees
 from Tech import ReturnMod
+from Tech import ReturnTechLevel
 # Vision???????????????????*(???)
 class Ant(WorldObject):
-    def __init__(self, SpawnPointX, SpawnPointY, HeadID=0, BodyID=0, BellyID=0, MyHomeID=0, SetAll = False, ID = 0, Health = 1, Energy = 1, Memory = ([-1]*MemorySize), FoodMemory = 0, MemoryAnt = -1, Inventory = 0, TargetPoint = [-1,0,0], Speed = 3, MaxHealth = 10, AttackStrenght = 1):
+    def __init__(self, SpawnPointX, SpawnPointY, HeadID=0, BodyID=0, BellyID=0, MyHomeID=0, SetAll = False, ID = 0, Health = 1, Energy = 1, Memory = ([-1]*MemorySize), FoodMemory = 0, MemoryAnt = -1, Inventory = 0, TargetPoint = [-1,0,0], Speed = 3, MaxHealth = 10, AttackStrenght = 1, TechLevel = 1):
         super().__init__(posx=SpawnPointX, posy=SpawnPointY)
         global SuperAntID
         global AntCount
@@ -19,22 +20,19 @@ class Ant(WorldObject):
         if LeMode == "Watcher": LeMode = "Scout"
         ClassModifiers = ReturnMod(LeMode)
         AntCount += 1
-        # I hope there is less cringe way, but i dont think it exists
+        #
         self.HBB = [HeadID, BodyID, BellyID]
         self.Mind = AntsHeads[HeadID][0]
         self.MaxHealth = 1 + AntsHeads[HeadID][1] +AntsBodies[BodyID][1] + AntsBellies[BellyID][1] + Modifiers["Health"]
         self.Speed = 2 + AntsBodies[BodyID][2] + AntsBellies[BellyID][3] + randint(-1, 1) + Modifiers["Speed"] + ClassModifiers["Speed"]
-        #if self.Mind == "Watcher": self.Speed = 3
         self.MaxEnergy = AntsBellies[BellyID][2]
-        # if AntsHeads[HeadID][0] == "Worker":
-            # addeng = ReturnMod("Worker", "WorkEfficiency")
-            # self.MaxEnergy += addeng
         self.EnergyNeed = AntsHeads[HeadID][5] + AntsBodies[BodyID][4]
         self.AttackStrenght = AntsHeads[HeadID][2] + Modifiers["Strenght"] + ClassModifiers["Strenght"]
         self.AttackRange = AntsHeads[HeadID][3]
         self.WorkEfficiency = AntsHeads[HeadID][6] + ReturnMod(LeMode, "WorkEfficiency")
         self.Health = self.MaxHealth + Modifiers["Health"] + ClassModifiers["Health"]
         self.Energy = self.MaxEnergy
+        #
         self.ID = SuperAntID
         self.side = 111
         if self.Mind == "Solder":
@@ -56,8 +54,7 @@ class Ant(WorldObject):
         self.TargetPoint = [-1, 0, 0]
         self.IDKWhereToGo = IDK[randint(0,1)]
         self.DefendPoint = [0, 0, 0]
-        ###print(f"Created ant with ID {self.ID}")
-        #SuperAntID += 1
+        self.TechLevel = TechLevel
         if SetAll:
             self.Health = Health
             self.Energy = Energy
@@ -70,6 +67,8 @@ class Ant(WorldObject):
             self.Speed = Speed
             self.MaxHealth = MaxHealth
             self.AttackStrenght = AttackStrenght
+            
+        self.side += (self.TechLevel - 1) * 1000
         self.BlockMapID = GetBlockMapID(self.posx, self.posy)
         AddAntToBlock(self.ID, self.BlockMapID[0], self.BlockMapID[1])
         UpdateAntsCount(AntsHeads[HeadID][0], 1)
@@ -184,6 +183,7 @@ class Ant(WorldObject):
             self.side += 100
         if self.Mind == "Watcher":
             self.side += 200
+        self.side += ((self.TechLevel - 1) * 1000)
         return MoveLeft
         
     def Attack(self, TargetID): # Do damage to target and add your id to HasBeenAttackedByID
@@ -366,8 +366,9 @@ class Bug(WorldObject):
         DeleteObjectFromBlock(self.ID, self.ObjType, self.BlockMapID[0], self.BlockMapID[1])
 
         
-
-def CreateAnt(HomeID=0, HeadID=0, BodyID=0, BellyID=0, SetAll = False, ID=0, x = 0, y = 0, Stats = [1, 1, [-1], 0, 1, 0, [-1,0,0]]):
+# Esli uzh proebalsya - to idi do konca, nikogda ne ostanavlivaysya!
+def CreateAnt(HomeID=0, HeadID=0, BodyID=0, BellyID=0, SetAll = False, ID=0, x = 0, y = 0, Stats = [1, 1, [-1], 0, 1, 0, [-1,0,0], 1], TechLevel = 1):
+    #Ant.posx, Ant.posy, Ant.HBB, Ant.HomeID, Ant.ID, [Ant.Health, Ant.Energy, Ant.Memory, Ant.FoodMemory, Ant.MemoryAnt, Ant.Inventory, Ant.TargetPoint, Ant.Speed, Ant.MaxHealth, Ant.AttackStrenght], Ant.TechLevel
     global SuperAntID
     global ListOfAnts
     if not SetAll:
@@ -383,7 +384,7 @@ def CreateAnt(HomeID=0, HeadID=0, BodyID=0, BellyID=0, SetAll = False, ID=0, x =
             pass
     else:
         if not ID in ListOfAnts:
-            ListOfAnts.update({ID: Ant(x,y,HeadID,BodyID,BellyID,HomeID, SetAll ,ID, Stats[0], Stats[1], Stats[2], Stats[3], Stats[4], Stats[5], Stats[6])})
+            ListOfAnts.update({ID: Ant(x,y,HeadID,BodyID,BellyID,HomeID, SetAll ,ID, Stats[0], Stats[1], Stats[2], Stats[3], Stats[4], Stats[5], Stats[6], Stats[7], Stats[8], Stats[9], TechLevel)})
             if ID >= SuperAntID: SuperAntID = ID + 1
 
 
@@ -1329,16 +1330,30 @@ AntCount = 0
 ListOfEnteties = {}
 LastStandDistance = 30
 FoodToEnergy = 200
-AntsHeads = [["default", 1, 1, 1, 1, 1, 1], ["Solder", 6, 5, 2, 4, 8, 1], ["Worker", 1, 1, 1, 2, 2, 3], ["Watcher", 0, 1, 1, 1, 1, 1, 1]] # Name, HealthBonus, Attack, AttackRange, Cost, EnergyNeed, WorkEfficiency
-AntsBodies = [["default", 1, 2, 2, 1], ["armored", 6, 1, 12, 4], ["scout", 1, 4, 4, 3] ] # Name, HealthBonus, SpeedBonus, Cost, EnergyNeed
-AntsBellies = [["default", 1, 1000, 0], ["light", -1, 800, 1], ["worker", 0, 2000, 0], ["heavy", 4, 5000, -1]] # Name, HealthBonus, EnergyStorage, SpeedBonus
+AntsHeads = [["default", 1, 1, 1, 1, 1, 1], ["Solder", 6, 5, 2, 4, 8, 1], ["Worker", 1, 1, 1, 2, 2, 3], ["Watcher", 0, 1, 1, 1, 1, 1, 1], ["Solder", 10, 6, 2, 5, 10, 1], ["Worker", 2, 2, 1, 5, 3, 5], ["Watcher", 0, 1, 1, 1, 2, 1, 1]] # Name, HealthBonus, Attack, AttackRange, Cost, EnergyNeed, WorkEfficiency
+AntsBodies = [["default", 1, 2, 2, 1], ["armored", 6, 1, 12, 4], ["scout", 1, 4, 4, 3], ["worker2", 3, 2, 3, 2], ["scout2", 1, 6, 10, 6], ["solder3", 20, 1, 25, 10], ["worker3", 4, 3, 5, 3], ["scout3", 2, 7, 15, 7]] # Name, HealthBonus, SpeedBonus, Cost, EnergyNeed
+AntsBellies = [["default", 1, 1000, 0], ["light", -1, 1400, 1], ["worker", 0, 3000, 0], ["heavy", 4, 5000, -1], ["Solder2", 10, 7000, 0]] # Name, HealthBonus, EnergyStorage, SpeedBonus
 States = ["default","Attack","Defend","Scout", "FoodFound","CreatingWay", "Worker", "GoingWay", "WhereFood","NoFood","YesFood", "TakeFood", "InHome", "Solder", "NeedFood", "Lost"]
-AntSolder = [1, 1, 4]
+AntSolder = [1, 1, 3]
 AntWorker = [2, 0, 2]
 AntScout = [3, 2, 1]
+AntSolder2 = [4, 1, 5]
+AntWorker2 = [5, 3, 2]
+AntScout2 = [6, 4, 1]
+AntSolder3 = [4, 5, 5]
+AntWorker3 = [5, 6, 2]
+AntScout3 = [6, 7, 1]
+
 SolderCost = AntsHeads[1][4] + AntsBodies[1][3]
-ScoutCost = AntsHeads[3][4] + AntsBodies[2][3]
 WorkerCost = AntsHeads[2][4] + AntsBodies[0][3]
+ScoutCost = AntsHeads[3][4] + AntsBodies[2][3]
+SolderCost2 = AntsHeads[4][4] + AntsBodies[1][3]
+WorkerCost2 = AntsHeads[5][4] + AntsBodies[3][3]
+ScoutCost2 = AntsHeads[6][4] + AntsBodies[4][3]
+SolderCost3 = AntsHeads[4][4] + AntsBodies[5][3]
+WorkerCost3 = AntsHeads[5][4] + AntsBodies[6][3]
+ScoutCost3 = AntsHeads[6][4] + AntsBodies[7][3]
+
 IDK = [-1, 1] # Необходим для движения по/против часовой стрелки
 AntsCount = {"All": 0,"Worker": 0, "Watcher": 0, "Solder": 0}
 ###print("Ants loaded!")
