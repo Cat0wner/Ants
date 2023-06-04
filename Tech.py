@@ -65,6 +65,7 @@ def SetTechToDefault():
     AntsResearched = {"Worker1": 0, "Worker2": 0, "Worker3": 0, "Solder1": 0, "Solder2": 0, "Solder3": 0, "Watcher1": 0, "Watcher2": 0, "Watcher3": 0, }
     Tech = TechOpener()
     TechLevel = 1
+    for th in Tech: print(th)
     #print("Tech now default")
     #print("SetTechToDefault")
     
@@ -92,7 +93,7 @@ def CanIOpenThisTech(TechID, Food=0, Ants=[0,0,0,0]): # All, Worker Scout Solder
     #print("CanIOpenThisTech")
     TheTech = Tech[TechID]
     if IsTechOpen(TechID) == 1: return -2
-    if TheTech["TechCost"] < Food:
+    if TheTech["TechCost"] < Food and TechLevel >= TheTech["TechLevel"]:
         if (TheTech["AntsRequired"][0] <= Ants[0] and TheTech["AntsRequired"][1] <= Ants[1]) and (TheTech["AntsRequired"][2] <= Ants[2] and TheTech["AntsRequired"][3] <= Ants[3]):
             for ReqTech in TheTech["TechRequired"]:
                 if IsTechOpen(ReqTech) != 1:
@@ -150,7 +151,7 @@ def SetModsToDefault():
     AllMods = {"Speed": 0, "Strenght": 0, "Health": 0}
     SolderMods = {"Speed": 0, "Strenght": 0, "Health": 0, "Armor": 0}
     ScoutMods = {"Speed": 0, "Strenght": 0, "Health": 0, "Vision": 0}
-    WorkerMods = {"Speed": 0, "Strenght": 0, "Health": 0, "Cost": 0}
+    WorkerMods = {"Speed": 0, "Strenght": 0, "Health": 0, "Cost": 0, "WorkEfficiency": 0}
     Mods = {"All": AllMods, "Solder": SolderMods, "Scout": ScoutMods, "Worker": WorkerMods }
     #print("Mods now default")
     #print("SetModsToDefault")

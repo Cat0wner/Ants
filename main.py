@@ -70,7 +70,7 @@ def UpdateAntButtons():
         if AntsResearched["Solder1"]:
             ButtonSolder.configure(text = AntSolderText) 
         else:
-            ButtonWorker.configure(text = NEDOSTUPNO)
+            ButtonSolder.configure(text = NEDOSTUPNO)
             
         if AntsResearched["Worker1"]:
             ButtonWorker.configure(text = AntWorkerText) 
@@ -87,7 +87,7 @@ def UpdateAntButtons():
         if AntsResearched["Solder2"]:
             ButtonSolder.configure(text = AntSolderText2) 
         else:
-            ButtonWorker.configure(text = NEDOSTUPNO)
+            ButtonSolder.configure(text = NEDOSTUPNO)
             
         if AntsResearched["Worker2"]:
             ButtonWorker.configure(text = AntWorkerText2) 
@@ -104,7 +104,7 @@ def UpdateAntButtons():
         if AntsResearched["Solder3"]:
             ButtonSolder.configure(text = AntSolderText3) 
         else:
-            ButtonWorker.configure(text = NEDOSTUPNO)
+            ButtonSolder.configure(text = NEDOSTUPNO)
             
         if AntsResearched["Worker3"]:
             ButtonWorker.configure(text = AntWorkerText3) 
@@ -195,6 +195,7 @@ def CreateTechTree():
     TechTreeFrame.destroy()
     CloseTech.place_forget()
     TechTreeFrame = Frame(master = BigTechFrame, bg="#F0F8FF") # pls delete them python thnks gj love u
+    TechTreeFrame.bind("<ButtonRelease-1>", TechDragMove)
     TechTreeFrame.bind("<Button-1>", TechDragStart)
     TechTreeFrame.bind("<ButtonRelease-1>", TechDragMove)
     MaxWH = CreateTechTreeButtons()
@@ -248,14 +249,14 @@ def ScoutButton():
     global TechLevelChoosen
     tch = TechLevelChoosen - 1
     if AntsResearched["Watcher1"] == 1 and TechLevelChoosen <= Tech.ReturnTechLevel():
-        Ants.CreateAnt(0, AntScout[tch][0], AntScout[tch][1], AntScout[tch][2], TechLevel = Tech.ReturnTechLevel())
+        Ants.CreateAnt(0, AntScout[tch][0], AntScout[tch][1], AntScout[tch][2], TechLevel = TechLevelChoosen)
     UpdateFood()
 
 def WorkerButton():
     global TechLevelChoosen
     tch = TechLevelChoosen - 1
     if AntsResearched["Worker1"] == 1 and TechLevelChoosen <= Tech.ReturnTechLevel():
-        Ants.CreateAnt(0, AntWorker[tch][0], AntWorker[tch][1], AntWorker[tch][2], TechLevel = Tech.ReturnTechLevel())
+        Ants.CreateAnt(0, AntWorker[tch][0], AntWorker[tch][1], AntWorker[tch][2], TechLevel = TechLevelChoosen)
     UpdateFood()
     
 def ObjectClearing():
@@ -578,14 +579,15 @@ def StartNewGame(IsLoad = False):
     #for i in range(5): # Наспавним солдат
     #    Ants.CreateAnt(0, AntSolder[0], AntSolder[1], AntSolder[2])
     #print("Item placing done!")
-    ButtonWorker.grid(column=0, row=0)
-    ButtonScout.grid(column=1, row=0)
-    ButtonSolder.grid(column=2, row=0)
-    FoodCount.grid(column=3, row=0)
-    ButtonPause.grid(column=4,row=0)
+    FrameTechLevel.grid(column=0, row=0)
+    ButtonWorker.grid(column=1, row=0)
+    ButtonScout.grid(column=2, row=0)
+    ButtonSolder.grid(column=3, row=0)
+    FoodCount.grid(column=4, row=0)
+    ButtonPause.grid(column=5,row=0)
     #ButtonGO.grid(column=5,row=0)
-    ButtonToMenu.grid(column=5, row=0)
-    ButtonToTech.grid(column=6, row=0)
+    ButtonToMenu.grid(column=6, row=0)
+    ButtonToTech.grid(column=7, row=0)
     StopSpin = True
     MenuFrame.place_forget()
     #print(GameCanvas.winfo_geometry())
@@ -931,6 +933,17 @@ def TechDragStart(event): pass
 def TechDragMove(event): pass
     #print("TechDragMove")
     
+def MoveTechFrameWithMouse(event):
+    #print("MoveLoadFrameWithMouse")
+    global TechTreeFrame
+    global ScrollY
+    if event.num == 5 or event.delta == -120:
+        ScrollY -= 20
+ 
+    if event.num == 4 or event.delta == 120:
+        ScrollY += 20
+    TechTreeFrame.place(relx=.5, y=ScrollY, anchor = N)
+    
 def ButtonTechClick(TechLevel):
     global TechLevelChoosen
     TechLevelChoosen = TechLevel
@@ -977,13 +990,13 @@ AntsHeads = [["default", 1, 1, 1, 1, 1, 1], ["Solder", 6, 5, 2, 4, 8, 1], ["Work
 AntsBodies = [["default", 1, 2, 2, 1], ["armored", 6, 1, 12, 4], ["scout", 1, 4, 4, 3], ["worker2", 3, 2, 3, 2], ["scout2", 1, 6, 10, 6], ["solder3", 20, 1, 25, 10], ["worker3", 4, 3, 5, 3], ["scout3", 2, 7, 15, 7]] # Name, HealthBonus, SpeedBonus, Cost, EnergyNeed
 AntsBellies = [["default", 1, 1000, 0], ["light", -1, 1400, 1], ["worker", 0, 3000, 0], ["heavy", 4, 5000, -1], ["Solder2", 10, 7000, 0]] # Name, HealthBonus, EnergyStorage, SpeedBonus
 States = ["default","Attack","Defend","Scout", "FoodFound","CreatingWay", "Worker", "GoingWay", "WhereFood","NoFood","YesFood", "TakeFood", "InHome", "Solder", "NeedFood", "Lost"]
-AntSolder = [[1, 1, 3] , [4, 1, 5] , [4, 5, 5]]
+AntSolder = [[1, 1, 3] , [4, 1, 4] , [4, 5, 4]]
 AntWorker = [[2, 0, 2] , [5, 3, 2] , [5, 6, 2]]
 AntScout = [[3, 2, 1] , [6, 4, 1] ,  [6, 7, 1]]
-AntSolder2 = [4, 1, 5]
+AntSolder2 = [4, 1, 4]
 AntWorker2 = [5, 3, 2]
 AntScout2 = [6, 4, 1]
-AntSolder3 = [4, 5, 5]
+AntSolder3 = [4, 5, 4]
 AntWorker3 = [5, 6, 2]
 AntScout3 = [6, 7, 1]
 
@@ -1211,16 +1224,16 @@ AntScoutText2 = "Разведчик2 "+str(ScoutCost2)
 AntSolderText2 = "Солдат2 "+str(SolderCost2)
 AntWorkerText3 = "Рабочий3 "+str(WorkerCost3)
 AntScoutText3 = "Разведчик3 "+str(ScoutCost3)
-AntSolderText2 = "Солдат3 "+str(SolderCost3)
+AntSolderText3 = "Солдат3 "+str(SolderCost3)
 GameFrame = Frame(master=mainwindow, width=200, height=40)
 
-FrameTechLevel = Frame(master=GameFrame)
+FrameTechLevel = Frame(master=GameFrame, width=30, height=30)
 ButtonTech1 = Button(master=FrameTechLevel, text="1", command=lambda: ButtonTechClick(1))
 ButtonTech2 = Button(master=FrameTechLevel, text="2", command=lambda: ButtonTechClick(2))
 ButtonTech3 = Button(master=FrameTechLevel, text="3", command=lambda: ButtonTechClick(3))
-ButtonTech1.pack()
-ButtonTech2.pack()
-ButtonTech2.pack()
+ButtonTech1.place(x=0, y=0, width=15, height=15)
+ButtonTech2.place(x=0, y=15, width=15, height=15)
+ButtonTech3.place(x=15, y=0, width=15, height=15)
 
 FoodCount = Label(master=GameFrame, text="0", font=("ComicSansMS", 12, "bold"),width=10)
 ButtonWorker = Button(master=GameFrame, text=NEDOSTUPNO,font=("ComicSansMS", 12, "bold"),width=10, command=WorkerButton)
@@ -1303,6 +1316,7 @@ BigTechFrame = Frame(master = mainwindow, bg="#F0F8FF", width = 700, height = 50
 TechTreeFrame = Frame(master = BigTechFrame, bg="red")
 TechTreeFrame.bind("<Button-1>", TechDragStart)
 TechTreeFrame.bind("<ButtonRelease-1>", TechDragMove)
+mainwindow.bind("<MouseWheel>", MoveTechFrameWithMouse)
 CloseTech = Button(master = BigTechFrame, text = "X", command=HideTech)
 #CloseTech.pack(anchor=NE, ipadx=1, ipady=1)
 #TechTreeFrameEnd

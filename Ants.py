@@ -376,7 +376,7 @@ def CreateAnt(HomeID=0, HeadID=0, BodyID=0, BellyID=0, SetAll = False, ID=0, x =
         if HomeFood(HomeID) >= Cost:
             xy = HomeXY(HomeID)
             ###print(xy)
-            ListOfAnts.update({SuperAntID: Ant(xy[0],xy[1],HeadID,BodyID,BellyID,HomeID)})
+            ListOfAnts.update({SuperAntID: Ant(xy[0],xy[1],HeadID,BodyID,BellyID,HomeID, TechLevel=TechLevel)})
             AddAntToHome(SuperAntID, Cost)
             SuperAntID += 1
         else:
@@ -1337,10 +1337,10 @@ States = ["default","Attack","Defend","Scout", "FoodFound","CreatingWay", "Worke
 AntSolder = [1, 1, 3]
 AntWorker = [2, 0, 2]
 AntScout = [3, 2, 1]
-AntSolder2 = [4, 1, 5]
+AntSolder2 = [4, 1, 4]
 AntWorker2 = [5, 3, 2]
 AntScout2 = [6, 4, 1]
-AntSolder3 = [4, 5, 5]
+AntSolder3 = [4, 5, 4]
 AntWorker3 = [5, 6, 2]
 AntScout3 = [6, 7, 1]
 

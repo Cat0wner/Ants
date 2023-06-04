@@ -124,7 +124,7 @@ class FoodPoint(WorldObject):
         #BlockMapList[self.BlockMapID[0]][self.BlockMapID[1]].RemoveObj(self.ID, self.ObjType)
 
 class Home(WorldObject):
-    def __init__(self, posx, posy, FoodInside=300, SetAll = False, AntsIDs = []):
+    def __init__(self, posx, posy, FoodInside=500, SetAll = False, AntsIDs = []):
         super().__init__(posx = posx, posy = posy)
         #print(FoodInside)
         self.AntsIDs = []
