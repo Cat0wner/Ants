@@ -10,7 +10,7 @@ import json
 # Head (idk just something)
 
 # Body
-# { "TechName/TechID": {"TechLevel": 1, "TechName": "Технология", "TechCost": 100, "IsOpened": 1, "TechRequired": ["TechID1", "TechID2"], "AntsRequired|: [0, 0, 0, 0], "Description": "TextDesc", "Column": 0, "Row": 0, "Mod": {"All": {"Health": 1}}, "Comands": {"OpenSolders": 1, "SetTechLevel": 2}} ,  }
+# { "TechName/TechID": {"TechLevel": 1, "TechName": "Технология", "TechCost": 100, "IsOpened": 1, "TechRequired": ["TechID1", "TechID2"], "AntsRequired|: [0, 0, 0, 0], "Description": "TextDesc", "Column": 0, "Row": 0, "Mod": {11: {"Health": 1}}, "Comands": {"OpenSolders": 1, "SetTechLevel": 2}} ,  }
 
 # End
 def TechOpener(FileDir = "technology/Tech.anttech"):
@@ -152,7 +152,7 @@ def SetModsToDefault():
     SolderMods = {"Speed": 0, "Strenght": 0, "Health": 0, "Armor": 0}
     ScoutMods = {"Speed": 0, "Strenght": 0, "Health": 0, "Vision": 0}
     WorkerMods = {"Speed": 0, "Strenght": 0, "Health": 0, "Cost": 0, "WorkEfficiency": 0}
-    Mods = {"All": AllMods, "Solder": SolderMods, "Scout": ScoutMods, "Worker": WorkerMods }
+    Mods = {"11": AllMods, "3333": SolderMods, "2222": ScoutMods, "1111": WorkerMods }
     #print("Mods now default")
     #print("SetModsToDefault")
 
@@ -164,12 +164,14 @@ def ReturnAllMods():
     
 def ReturnMod(Target, Mod = ""):
     global Mods
-    #print("ReturnMod")
+    print("ReturnMod")
+    print(Target)
+    print(Mod)
     if Mod == "":
-        if Target in Mods: return Mods[Target]
+        if str(Target) in Mods: return Mods[str(Target)]
         else: return {"Speed": 0, "Strenght": 0, "Health": 0}
     else:
-        if Mod in Mods[Target]: return Mods[Target][Mod]
+        if Mod in Mods[str(Target)]: return Mods[str(Target)][Mod]
         else: return 0
         
 #def SetT ????
@@ -238,7 +240,7 @@ AllMods = {"Speed": 0, "Strenght": 0, "Health": 0} # ACHUALLY, why just dont ret
 SolderMods = {"Speed": 0, "Strenght": 0, "Health": 0, "Armor": 0}
 ScoutMods = {"Speed": 0, "Strenght": 0, "Health": 0, "Vision": 0}
 WorkerMods = {"Speed": 0, "Strenght": 0, "Health": 0, "Cost": 0, "WorkEfficiency": 0}
-Mods = {"All": AllMods, "Solder": SolderMods, "Scout": ScoutMods, "Worker": WorkerMods }
+Mods = {"11": AllMods, "3333": SolderMods, "2222": ScoutMods, "1111": WorkerMods }
 ModsCopy = Mods.copy()
 # So, when we first open this - all mods sets to default
 Tech = TechOpener()

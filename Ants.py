@@ -17,7 +17,7 @@ class Ant(WorldObject):
         global AntCount
         Modifiers = ReturnMod("All")
         LeMode = AntsHeads[HeadID][0]
-        if LeMode == "Watcher": LeMode = "Scout"
+        if LeMode == 2222: LeMode = 2222
         ClassModifiers = ReturnMod(LeMode)
         AntCount += 1
         #
@@ -35,9 +35,9 @@ class Ant(WorldObject):
         #
         self.ID = SuperAntID
         self.side = 111
-        if self.Mind == "Solder":
+        if self.Mind == 3333:
             self.side += 100
-        if self.Mind == "Watcher":
+        if self.Mind == 2222:
             self.side += 200
         self.HomeID = MyHomeID
         self.IsAlive = True
@@ -46,7 +46,7 @@ class Ant(WorldObject):
         self.ObjType = "ant"
         self.AngleRand = randint(0, 360)
         self.Angle = self.AngleRand
-        self.State = "InHome" # InHome
+        self.State = 415 # InHome
         self.Memory = [-1] * MemorySize
         self.FoodMemory = 0
         self.MemoryAnt = -1
@@ -123,7 +123,7 @@ class Ant(WorldObject):
         else: 
             MoveLeft = self.Speed - Distance
         self.Angle = Angle
-        #if self.State == "NeedFood":
+        #if self.State == 416:
         #    ###print(f"Actor {self.ID} at pos [{self.posx}, {self.posy}]moving at {Distance} and {Angle}")
         
         if (Angle <= 90):
@@ -179,16 +179,16 @@ class Ant(WorldObject):
         ##print(f"MOVE: 166. Angle was {Angle} >> {SecAngle}\n Side = {self.side}")
         ##print(f"MOVE: 167. Distance = {Distance}\n\n")
         ##print(f"Ant in {self.BlockMapID}")
-        if self.Mind == "Solder":
+        if self.Mind == 3333:
             self.side += 100
-        if self.Mind == "Watcher":
+        if self.Mind == 2222:
             self.side += 200
         self.side += ((self.TechLevel - 1) * 1000)
         return MoveLeft
         
     def Attack(self, TargetID): # Do damage to target and add your id to HasBeenAttackedByID
         DoDamage(self.ID, TargetID, "bug", self.AttackStrenght, True)
-        if self.Mind == "Solder":
+        if self.Mind == 3333:
             self.Energy += 50
     
     def TakeDamage(self, damage, FromEnemy=False, EnemyID=-1):
@@ -296,7 +296,7 @@ class Bug(WorldObject):
         else: 
             MoveLeft = self.MoveSpeed - Distance
         self.Angle = Angle
-        #if self.State == "NeedFood":
+        #if self.State == 416:
         ##print(f"Actor {self.ID} at pos [{self.posx}, {self.posy}]moving at {Distance} and {Angle}")
         
         if (Angle <= 90):
@@ -475,9 +475,9 @@ def FindNotLostAnt(BMx, BMy, ObjType="ant", Range=2, ignore=[-1]):
     Scan = ScanRadiusAround(BMx, BMy, ObjType, Range, ignore)
     ReturnThisArray.extend(Scan)
     for Ant in ReturnThisArray:
-        if GetAntMind(Ant) == "Solder":
+        if GetAntMind(Ant) == 3333:
             return Ant
-        if GetAntState(Ant) != "Lost":
+        if GetAntState(Ant) != 417:
             return Ant
     return -1
 
@@ -627,16 +627,16 @@ def AntAI(Actor):
     MyX = Actor.posx
     MyY = Actor.posy
     if Actor.posx < 0 or Actor.posy < 0 or Actor.posx > SizeXSize or Actor.posy > SizeXSize:
-        Actor.State = "NeedFood"
+        Actor.State = 416
     # BY PRIORITY
     #ATTACK
-    if Actor.Mind == "Solder" and IsAttack == True:
-        Actor.State = "Attack"
-    if Actor.Mind == "Solder" and IsDefend == True:
-        Actor.State = "Defend"
+    if Actor.Mind == 3333 and IsAttack == True:
+        Actor.State = 405
+    if Actor.Mind == 3333 and IsDefend == True:
+        Actor.State = 406
     # Если муравей не разведчик и был атакован - 
     # Муравей получает от врага ID и атакует в ответ.
-    if (Actor.HasBeenAttacked == True and (Actor.Mind == "Worker" or Actor.Mind == "Solder")): 
+    if (Actor.HasBeenAttacked == True and (Actor.Mind == 1111 or Actor.Mind == 3333)): 
         # Теперь мы ищем ближайшего врага в нашем блоке, кому дать пизды
         
         # FAST ATTACK
@@ -674,7 +674,7 @@ def AntAI(Actor):
         else: # Если враг не найден - выключаем бой
             Actor.HasBeenAttacked = False
             
-    if (Actor.HasBeenAttacked == True and Actor.Mind == "Watcher"): # Ну а если муравей - разведчик - побег
+    if (Actor.HasBeenAttacked == True and Actor.Mind == 2222): # Ну а если муравей - разведчик - побег
         # Нужно проверить, есть ли враги рядом
         EnemyList = ScanRadiusAround(Actor.BlockMapID[0], Actor.BlockMapID[1], "bug", 2)
         if not EnemyList:
@@ -700,18 +700,18 @@ def AntAI(Actor):
                     Actor.Move(HowToMove[0], HowToMove[1])
                     return 0
         
-    if (Actor.Energy < (Actor.MaxEnergy // 2)) and (Actor.State != "Lost" and Actor.State != "InHome" and Actor.State != "NeedFood"): # Муравьхи гхолодные????
-        Actor.State = "NeedFood"
+    if (Actor.Energy < (Actor.MaxEnergy // 2)) and (Actor.State != 417 and Actor.State != 415 and Actor.State != 416): # Муравьхи гхолодные????
+        Actor.State = 416
         #print (f"Need food. Actor {Actor.ID} now need food!")
 
-    if (Actor.Mind == "Solder"): # Основной ИИ Солдата
+    if (Actor.Mind == 3333): # Основной ИИ Солдата
     
-        if Actor.State == "InHome":
+        if Actor.State == 415:
             ##print(f"Actor {Actor.ID} is Solder InHome and eating???")
             Actor.EatFood()
             Homes = HomeXY()
             if GetDistanceRaw(Actor.posx, Actor.posy, Homes[0], Homes[1]) > 7:
-                Actor.State = "Solder"
+                Actor.State = 3333
                 ##print(f"Solder {Actor.ID} is SUCSESSFULLY EAT and is Solder")
             else:
                 ##print(f"Actor {Actor.ID} is not leaving now {Actor.posx}, {Actor.posy}")
@@ -719,7 +719,7 @@ def AntAI(Actor):
                 Actor.AngleRand += randint(-5, 5)
             return 0
 
-        if Actor.State == "Solder":
+        if Actor.State == 3333:
             ##print(f"Actor {Actor.ID} is Solder")
             EnemyList = ScanRadiusAround(Actor.BlockMapID[0], Actor.BlockMapID[1], "bug", 4)
             if (EnemyList):
@@ -770,7 +770,7 @@ def AntAI(Actor):
                         Actor.MemoryClear()
                     return 0
 
-        if Actor.State == "NeedFood":
+        if Actor.State == 416:
             ###print(f"Actor {Actor.ID} is Solder need food")
             EnemyList = ScanRadiusAround(Actor.BlockMapID[0], Actor.BlockMapID[1], "bug", 2)
             if (EnemyList):
@@ -796,11 +796,11 @@ def AntAI(Actor):
                     Actor.Move(HowToMove1, HowToMove2)                    
                     return 0
                 else:
-                    Actor.State = "InHome"
+                    Actor.State = 415
                     return 0
         
-        if Actor.State == "Attack":
-            if not IsAttack: Actor.State = "Solder"
+        if Actor.State == 405:
+            if not IsAttack: Actor.State = 3333
             EnemyList = ScanRadiusAround(Actor.BlockMapID[0], Actor.BlockMapID[1], "bug", 5)
             if (EnemyList):
                 #print(EnemyList)
@@ -824,9 +824,9 @@ def AntAI(Actor):
                     Actor.Move(HowToMove[0] + (randint(-1, 1) * 20), HowToMove[1])
                     return 0
                     
-        if Actor.State == "Defend":
+        if Actor.State == 406:
             if not IsDefend: 
-                Actor.State = "Solder"
+                Actor.State = 3333
                 Actor.DefendPoint[0] = 0
                 return 0
             EnemyList = ScanRadiusAround(Actor.BlockMapID[0], Actor.BlockMapID[1], "bug", 5)
@@ -857,9 +857,9 @@ def AntAI(Actor):
         
 
     #FOR WORKER
-    if (Actor.Mind == "Worker"):
+    if (Actor.Mind == 1111):
     
-        if Actor.State == "InHome":
+        if Actor.State == 415:
             Actor.MemoryClear()
             ###print(Actor.Inventory)
             ##print(f"Actor {Actor.ID} is Worker InHome")
@@ -867,7 +867,7 @@ def AntAI(Actor):
             Actor.EatFood()
             Homes = HomeXY()
             if GetDistanceRaw(Actor.posx, Actor.posy, Homes[0], Homes[1]) > 7:
-                Actor.State = "Worker"
+                Actor.State = 1111
                 ##print(f"618. Worker {Actor.ID} is SUCSESSFULLY EAT")
             else:
                 ###print(f"Actor {Actor.ID} is not leaving now {Actor.posx}, {Actor.posy}")
@@ -879,7 +879,7 @@ def AntAI(Actor):
             ###print(Actor.Inventory)
             return 0
             
-        if Actor.State == "Worker": # Ищем первый попавшийся WP
+        if Actor.State == 1111: # Ищем первый попавшийся WP
             ##print(f"Actor {Actor.ID} is Worker")
             WayPoints = ScanRadiusAround(Actor.BlockMapID[0], Actor.BlockMapID[1], "way", 3)
             if (WayPoints):
@@ -896,7 +896,7 @@ def AntAI(Actor):
                 Actor.GoWayPoint(WP[0])
                 HowToMove = AutoMove(Actor.posx, Actor.posy, WP[1], WP[2])
                 Actor.Move(HowToMove[0]+randint(-5, 5), HowToMove[1])
-                Actor.State = "GoingWay"
+                Actor.State = 410
                 ##print(f"Worker {Actor.ID} is GoingWay")
                 return 0
             else: 
@@ -908,14 +908,14 @@ def AntAI(Actor):
                     MoveAroundHome(Actor, True)
                     return 0
                     
-        if Actor.State == "GoingWay": #Идём по WP
+        if Actor.State == 410: #Идём по WP
             ##print(f"Actor {Actor.ID} is Worker GoingWay")
             ##print(f"Actor Target is {Actor.TargetPoint} ")
             if Actor.TargetPoint[0] != -1:
                 if GetDistanceRaw(Actor.posx, Actor.posy, Actor.TargetPoint[1], Actor.TargetPoint[2]) < 10:
                     Actor.GoWayPoint(Actor.TargetPoint[0])
                     if GetWPIsFinal(Actor.TargetPoint[0]):
-                        Actor.State = "WhereFood"
+                        Actor.State = 411
                         ##print(f"Worker {Actor.ID} is WhereFood")
                     Actor.TargetPoint[0] = -1
                     return 0
@@ -938,35 +938,35 @@ def AntAI(Actor):
                 if GetDistanceRaw(Actor.posx, Actor.posy, GoToWP[1], GoToWP[2]) < 10: # Слишком близко - считаем пройденной
                     Actor.GoWayPoint(GoToWP[0])
                     if GetWPIsFinal(GoToWP[0]):
-                        Actor.State = "WhereFood"
+                        Actor.State = 411
                         Actor.MemoryClear()
                         ##print(f"Worker {Actor.ID} is WhereFood")
                     Actor.TargetPoint[0] = -1
                 return 0
             else: # xyz.
-                Actor.State = "WhereFood"
+                Actor.State = 411
                     ##print(f"Worker {Actor.ID} is Lost")
                 return 0
         
-        if Actor.State == "WhereFood":
+        if Actor.State == 411:
             Actor.MemoryClear()
             ##print(f"Actor {Actor.ID} is Worker WhereFood")
             FoodFound = ScanRadiusAround(Actor.BlockMapID[0], Actor.BlockMapID[1], "food", 2)
             if FoodFound:
-                Actor.State = "YesFood"
+                Actor.State = 413
                 ##print(f"Worker {Actor.ID} is YesFood")
                 ##print(FoodFound)
                 ClosestFood = GetClosest(MyX, MyY, FoodFound, "food")
                 Actor.FoodMemory = ClosestFood[0]
             else:
-                Actor.State = "NoFood"
+                Actor.State = 412
                 ##print(f"Worker {Actor.ID} is NoFood")
                 
-        if Actor.State == "NoFood":
+        if Actor.State == 412:
             ##print(f"Actor {Actor.ID} is Worker NoFood")
             HomeCoords = HomeXY(Actor.HomeID)
             if GetDistanceRaw(Actor.posx, Actor.posy, HomeCoords[0], HomeCoords[1]) < 5: # Близко к дому - похуй, идём кушать
-                Actor.State = "NeedFood"
+                Actor.State = 416
                 ##print(f"Worker {Actor.ID} is NeedFood")
                 return 0
             if Actor.TargetPoint[0] != -1: # Короч если есть таргет - чистим его (если близко) или идём к нему (если далеко)
@@ -994,10 +994,10 @@ def AntAI(Actor):
                 Actor.Move(HowToMove[0] + randint(-5, 5), HowToMove[1])
                 return 0
             else:
-                Actor.State = "Lost"
+                Actor.State = 417
                 ##print(f"Worker {Actor.ID} is Lost")
                 
-        if Actor.State == "YesFood":
+        if Actor.State == 413:
             ##print(f"Actor {Actor.ID} is Worker YesFood")
             OurFood = FoodXY(Actor.FoodMemory)
             if OurFood:
@@ -1008,18 +1008,18 @@ def AntAI(Actor):
                 else:
                     FoodSuccess = Actor.TakeFood(Actor.FoodMemory) # Need to check food
                     if FoodSuccess == 0:
-                        Actor.State = "NoFood"
+                        Actor.State = 412
                         ##print(f"Worker {Actor.ID} is NoFood")
                         Actor.FoodMemory = -1
                     if FoodSuccess == 1:
-                        Actor.State = "TakeFood"
+                        Actor.State = 414
                         ##print(f"Worker {Actor.ID} is TakeFood")
                     return 0
             else: 
-                Actor.State = "NoFood"
+                Actor.State = 412
                 ##print(f"Worker {Actor.ID} is NoFood")
             
-        if Actor.State == "TakeFood": # Да-да, ctrl+c > ctrl+v, иди нахуй, я уже заебался.
+        if Actor.State == 414: # Да-да, ctrl+c > ctrl+v, иди нахуй, я уже заебался.
             ##print(f"Actor {Actor.ID} is Worker TakeFood")
             if Actor.TargetPoint[0] != -1:
                 if GetDistanceRaw(Actor.posx, Actor.posy, Actor.TargetPoint[1], Actor.TargetPoint[2]) < 5:
@@ -1049,19 +1049,19 @@ def AntAI(Actor):
                 if GetDistanceRaw(Actor.posx, Actor.posy, GoToWP[1], GoToWP[2]) < 5: # Слишком близко - считаем пройденной
                     Actor.GoWayPoint(GoToWP[0])
                     if GetWPIsFinal(GoToWP[0]):
-                        Actor.State = "NeedFood"
+                        Actor.State = 416
                         ##print(f"Worker {Actor.ID} is NeedFood")
                 return 0
             else: # Зачем? Чтобы муравей мог продолжить искать вейпоинты если зашёл в тупик, где их нет.
                 Actor.MemoryClear()
                 WayPoints = ScanRadiusAround(Actor.BlockMapID[0], Actor.BlockMapID[1], "way", 2)
                 if not WayPoints:
-                    Actor.State = "Lost"
+                    Actor.State = 417
                     ##print(f"Worker {Actor.ID} is Lost")
                 return 0
             
                 
-        if Actor.State == "NeedFood":
+        if Actor.State == 416:
             ##print(f"Actor {Actor.ID} is Worker NeedFood")
             HomeCoords = HomeXY(Actor.HomeID)
             if (GetDistanceRaw(Actor.posx, Actor.posy, HomeCoords[0],HomeCoords[1]) > 5):
@@ -1069,22 +1069,22 @@ def AntAI(Actor):
                 Actor.Move(HowToMove[0], HowToMove[1])
                 return 0
             else:
-                Actor.State = "InHome"
+                Actor.State = 415
                 ##print(f"Worker {Actor.ID} is InHome")
                 return 0
             
-        if Actor.State == "Lost":
-            Actor.State = "NeedFood"
+        if Actor.State == 417:
+            Actor.State = 416
             return 0
             MyHomeXY = HomeXY(Actor.HomeID)
             if GetDistanceRaw(Actor.posx, Actor.posy, MyHomeXY[0], MyHomeXY[1]) < 50:
                 ##print(f"Actor {Actor.ID} is no longer lost")
-                Actor.State = "NeedFood"
+                Actor.State = 416
                 return 0
             ###print(f"Actor {Actor.ID} is Worker Lost")
             if Actor.MemoryAnt != -1:
                 NotLostAnt = ListOfAnts[Actor.MemoryAnt]
-                if NotLostAnt.State != "Lost":
+                if NotLostAnt.State != 417:
                     HowToMove = AutoMove(Actor.posx, Actor.posy, NotLostAnt.posx, NotLostAnt.posy)
                     Actor.Move(HowToMove[0], HowToMove[1])
                     return 0
@@ -1104,15 +1104,15 @@ def AntAI(Actor):
         
 
     #FIND FOOD
-    if (Actor.Mind == "Watcher"):
+    if (Actor.Mind == 2222):
     
-        if Actor.State == "InHome":
+        if Actor.State == 415:
             ###print(f"Actor {Actor.ID} is Scout InHome")
             ###print(f"Actor {Actor.ID} is Solder InHome and eating???")
             Actor.EatFood()
             Homes = HomeXY()
             if GetDistanceRaw(Actor.posx, Actor.posy, Homes[0], Homes[1]) > 7:
-                Actor.State = "Scout"
+                Actor.State = 2222
                 ##print(f"Scout {Actor.ID} is SUCSESSFULLY EAT")
             else:
                 ###print(f"Actor {Actor.ID} is not leaving now {Actor.posx}, {Actor.posy}")
@@ -1120,12 +1120,12 @@ def AntAI(Actor):
                 Actor.AngleRand += randint(-5, 5)
             return 0
             
-        if Actor.State == "Scout":
+        if Actor.State == 2222:
             ###print(f"Actor {Actor.ID} is Scout")
             FoodFound = ScanRadiusAround(Actor.BlockMapID[0], Actor.BlockMapID[1], "food", 3, [-1],True)
             WPFound = ScanRadiusAround(Actor.BlockMapID[0], Actor.BlockMapID[1], "way", 2)
             if FoodFound and (not WPFound):
-                Actor.State = "FoodFound"
+                Actor.State = 408
                 ##print(f"Scout {Actor.ID} is FOUND FOOD")
                 ###print(FoodFound)
                 ClosestFood = GetClosest(MyX, MyY, FoodFound, "food") # [ObjID, ObjX, ObjY, NewDiffSum]
@@ -1136,10 +1136,10 @@ def AntAI(Actor):
                 Actor.Move(Actor.Angle, Actor.Speed)
                 return 0
                 
-        if Actor.State == "FoodFound":
+        if Actor.State == 408:
             WPFound = ScanRadiusAround(Actor.BlockMapID[0], Actor.BlockMapID[1], "way", 2)
             if WPFound:
-                Actor.State = "Scout"
+                Actor.State = 2222
                 ##print(f"879. Scout {Actor.ID} is Scout because there is WP")
                 ##print(WPFound[0])
                 return()
@@ -1151,7 +1151,7 @@ def AntAI(Actor):
             ##print(f"FOOD FOUND.890: Distance = {DistanceToFood}")
             ##print(f"FOODFOUND: Distance = ({Actor.posx},{Actor.posy}) - ({FoodX},{FoodY})")
             if DistanceToFood < 2:
-                Actor.State = "CreatingWay"
+                Actor.State = 409
                 LeaveMarkOnFood(Actor.FoodMemory)
                 ##print(f"890. Scout {Actor.ID} ({Actor.posx},{Actor.posy}) is CreatingWay to food at {FoodX} {FoodY}")
                 Actor.CreateWP(20, True)
@@ -1161,7 +1161,7 @@ def AntAI(Actor):
                 Actor.Move(HowToMove[0], HowToMove[1])
                 return 0
                 
-        if Actor.State == "CreatingWay":
+        if Actor.State == 409:
             ###print(f"Actor {Actor.ID} is Scout CreatingWay")
             HomeCoords = HomeXY(Actor.HomeID)
             if (GetDistanceRaw(Actor.posx, Actor.posy, HomeCoords[0], HomeCoords[1]) > 15):
@@ -1173,11 +1173,11 @@ def AntAI(Actor):
                 return 0
             else:
                 Actor.CreateWP(20)
-                Actor.State = "NeedFood"
+                Actor.State = 416
                 ##print(f"909. Scout {Actor.ID} is Done creating way")
                 return 0
                 
-        if Actor.State == "NeedFood":
+        if Actor.State == 416:
             ###print(f"Actor {Actor.ID} is Scout NeedFood")
             HomeCoords = HomeXY()
             if (GetDistanceRaw(Actor.posx, Actor.posy, HomeCoords[0], HomeCoords[1]) > 5):
@@ -1185,7 +1185,7 @@ def AntAI(Actor):
                 Actor.Move(HowToMove[0], HowToMove[1])
                 return 0
             else:
-                Actor.State = "InHome"
+                Actor.State = 415
                 ##print(f"921. Scout {Actor.ID} is in home")
                 return 0
 
@@ -1330,10 +1330,12 @@ AntCount = 0
 ListOfEnteties = {}
 LastStandDistance = 30
 FoodToEnergy = 200
-AntsHeads = [["default", 1, 1, 1, 1, 1, 1], ["Solder", 6, 5, 2, 4, 8, 1], ["Worker", 1, 1, 1, 2, 2, 3], ["Watcher", 0, 1, 1, 1, 1, 1, 1], ["Solder", 10, 6, 2, 5, 10, 1], ["Worker", 2, 2, 1, 5, 3, 5], ["Watcher", 0, 1, 1, 1, 2, 1, 1]] # Name, HealthBonus, Attack, AttackRange, Cost, EnergyNeed, WorkEfficiency
+AntsHeads = [["default", 1, 1, 1, 1, 1, 1], [3333, 6, 5, 2, 4, 8, 1], [1111, 1, 1, 1, 2, 2, 3], [2222, 0, 1, 1, 1, 1, 1, 1], [3333, 10, 6, 2, 5, 10, 1], [1111, 2, 2, 1, 5, 3, 5], [2222, 0, 1, 1, 1, 2, 1, 1]] # Name, HealthBonus, Attack, AttackRange, Cost, EnergyNeed, WorkEfficiency
 AntsBodies = [["default", 1, 2, 2, 1], ["armored", 6, 1, 12, 4], ["scout", 1, 4, 4, 3], ["worker2", 3, 2, 3, 2], ["scout2", 1, 6, 10, 6], ["solder3", 20, 1, 25, 10], ["worker3", 4, 3, 5, 3], ["scout3", 2, 7, 15, 7]] # Name, HealthBonus, SpeedBonus, Cost, EnergyNeed
 AntsBellies = [["default", 1, 1000, 0], ["light", -1, 1400, 1], ["worker", 0, 3000, 0], ["heavy", 4, 5000, -1], ["Solder2", 10, 7000, 0]] # Name, HealthBonus, EnergyStorage, SpeedBonus
-States = ["default","Attack","Defend","Scout", "FoodFound","CreatingWay", "Worker", "GoingWay", "WhereFood","NoFood","YesFood", "TakeFood", "InHome", "Solder", "NeedFood", "Lost"]
+States = ["default",405,406,2222, 408,409, 1111, 410, 411,412,413, 414, 415, 3333, 416, 417]
+States2 = ["default","Attack","Defend",2222, "FoodFound","CreatingWay", 1111, "GoingWay", "WhereFood","NoFood","YesFood", "TakeFood", "InHome", 3333, "NeedFood", "Lost"]
+#States2 = [default",Attack",Defend",Scout", FoodFound",CreatingWay", 1111, GoingWay", WhereFood",NoFood",YesFood", TakeFood", InHome", 3333, NeedFood", Lost"]
 AntSolder = [1, 1, 3]
 AntWorker = [2, 0, 2]
 AntScout = [3, 2, 1]
@@ -1355,5 +1357,5 @@ WorkerCost3 = AntsHeads[5][4] + AntsBodies[6][3]
 ScoutCost3 = AntsHeads[6][4] + AntsBodies[7][3]
 
 IDK = [-1, 1] # Необходим для движения по/против часовой стрелки
-AntsCount = {"All": 0,"Worker": 0, "Watcher": 0, "Solder": 0}
+AntsCount = {"All": 0,1111: 0, 2222: 0, 3333: 0}
 ###print("Ants loaded!")

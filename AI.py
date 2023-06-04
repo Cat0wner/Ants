@@ -146,7 +146,7 @@ def AntAI(Actor):
     #ATTACK
     # Если муравей не разведчик и был атакован - 
     # Муравей получает от врага ID и атакует в ответ.
-    if (Actor.HasBeenAttacked == True and (Actor.Mind == "Worker" or Actor.Mind == "Solder")): 
+    if (Actor.HasBeenAttacked == True and (Actor.Mind == 1111 or Actor.Mind == "Solder")): 
         # Теперь мы ищем ближайшего врага в нашем блоке, кому дать пизды
         
         # FAST ATTACK
@@ -184,7 +184,7 @@ def AntAI(Actor):
         else: # Если враг не найден - выключаем бой
             Actor.HasBeenAttacked = False
             
-    if (Actor.HasBeenAttacked == True and Actor.Mind == "Watcher"): # Ну а если муравей - разведчик - побег
+    if (Actor.HasBeenAttacked == True and Actor.Mind == 2222): # Ну а если муравей - разведчик - побег
         # Нужно проверить, есть ли враги рядом
         EnemyList = ScanRadiusAround(Actor.BlockMapID[0], Actor.BlockMapID[1], "bug", 2)
         if not EnemyList:
@@ -273,14 +273,14 @@ def AntAI(Actor):
                 
 
     #FOR WORKER
-    if (Actor.Mind == "Worker"):
+    if (Actor.Mind == 1111):
     
         if Actor.State == "InHome":
-            EatAndLeave(Actor, "Worker")
+            EatAndLeave(Actor, 1111)
             Actor.PutFoodHome()
             return 0
             
-        if Actor.State == "Worker": # Ищем первый попавшийся WP
+        if Actor.State == 1111: # Ищем первый попавшийся WP
             WayPoints = ScanRadiusAround(Actor.BlockMapID[0], Actor.BlockMapID[1], "way", 2)
             if (WayPoints):
                 WPArray = []
@@ -451,13 +451,13 @@ def AntAI(Actor):
         
 
     #FIND FOOD
-    if (Actor.Mind == "Watcher"):
+    if (Actor.Mind == 2222):
     
         if Actor.State == "InHome":
-            EatAndLeave(Actor, "Scout")
+            EatAndLeave(Actor, 407)
             return 0
             
-        if Actor.State == "Scout":
+        if Actor.State == 407:
             FoodFound = ScanRadiusAround(Actor.BlockMapID[0], Actor.BlockMapID[1], "food", 2)
             WPFound = ScanRadiusAround(Actor.BlockMapID[0], Actor.BlockMapID[1], "way", 2)
             if FoodFound and not WPFound:

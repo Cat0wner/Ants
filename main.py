@@ -169,7 +169,7 @@ def TechButtonClick(TechID):
     global AntsResearched
     Antsct = Ants.ReturnAntsCount()
     Foods = World.HomeFood()
-    CanI = Tech.CanIOpenThisTech(TechID, Foods, [Antsct["All"], Antsct["Worker"], Antsct["Watcher"], Antsct["Solder"]])
+    CanI = Tech.CanIOpenThisTech(TechID, Foods, [Antsct["All"], Antsct[1111], Antsct[2222], Antsct[3333]])
     if CanI >= 0:
         World.StealFood(CanI)
         Tech.OpenThisTechPls(TechID)
@@ -986,10 +986,10 @@ BugsRendered = {}
 DeleteAnts = []
 DeleteFoods = []
 DeleteBugs = []
-AntsHeads = [["default", 1, 1, 1, 1, 1, 1], ["Solder", 6, 5, 2, 4, 8, 1], ["Worker", 1, 1, 1, 2, 2, 3], ["Watcher", 0, 1, 1, 1, 1, 1, 1], ["Solder", 10, 6, 2, 5, 10, 1], ["Worker", 2, 2, 1, 5, 3, 5], ["Watcher", 0, 1, 1, 1, 2, 1, 1]] # Name, HealthBonus, Attack, AttackRange, Cost, EnergyNeed, WorkEfficiency
+AntsHeads = [["default", 1, 1, 1, 1, 1, 1], ["Solder", 6, 5, 2, 4, 8, 1], [1111, 1, 1, 1, 2, 2, 3], [2222, 0, 1, 1, 1, 1, 1, 1], ["Solder", 10, 6, 2, 5, 10, 1], [1111, 2, 2, 1, 5, 3, 5], [2222, 0, 1, 1, 1, 2, 1, 1]] # Name, HealthBonus, Attack, AttackRange, Cost, EnergyNeed, WorkEfficiency
 AntsBodies = [["default", 1, 2, 2, 1], ["armored", 6, 1, 12, 4], ["scout", 1, 4, 4, 3], ["worker2", 3, 2, 3, 2], ["scout2", 1, 6, 10, 6], ["solder3", 20, 1, 25, 10], ["worker3", 4, 3, 5, 3], ["scout3", 2, 7, 15, 7]] # Name, HealthBonus, SpeedBonus, Cost, EnergyNeed
 AntsBellies = [["default", 1, 1000, 0], ["light", -1, 1400, 1], ["worker", 0, 3000, 0], ["heavy", 4, 5000, -1], ["Solder2", 10, 7000, 0]] # Name, HealthBonus, EnergyStorage, SpeedBonus
-States = ["default","Attack","Defend","Scout", "FoodFound","CreatingWay", "Worker", "GoingWay", "WhereFood","NoFood","YesFood", "TakeFood", "InHome", "Solder", "NeedFood", "Lost"]
+States = ["default","Attack","Defend",2222, "FoodFound","CreatingWay", 1111, "GoingWay", "WhereFood","NoFood","YesFood", "TakeFood", "InHome", "Solder", "NeedFood", "Lost"]
 AntSolder = [[1, 1, 3] , [4, 1, 4] , [4, 5, 4]]
 AntWorker = [[2, 0, 2] , [5, 3, 2] , [5, 6, 2]]
 AntScout = [[3, 2, 1] , [6, 4, 1] ,  [6, 7, 1]]
