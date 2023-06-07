@@ -454,10 +454,10 @@ def AntAI(Actor):
     if (Actor.Mind == 2222):
     
         if Actor.State == "InHome":
-            EatAndLeave(Actor, 407)
+            EatAndLeave(Actor, 2222)
             return 0
             
-        if Actor.State == 407:
+        if Actor.State == 2222:
             FoodFound = ScanRadiusAround(Actor.BlockMapID[0], Actor.BlockMapID[1], "food", 2)
             WPFound = ScanRadiusAround(Actor.BlockMapID[0], Actor.BlockMapID[1], "way", 2)
             if FoodFound and not WPFound:

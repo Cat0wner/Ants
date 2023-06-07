@@ -927,6 +927,32 @@ def ClickNeutral():
     if IsAttackClicked:
         ClickAttack()
     SetAttackDefence(False,False)
+    
+def ClickRadar():
+    global RadarBindID
+    global GameCanvas
+    global IsRadarClicked
+    if IsRadarClicked:
+        GameCanvas.unbind("<Button-1>")
+        IsRadarClicked = False
+        GameCanvas.bind("<Button-1>", DragStart)
+    else:
+        RadarBindID = GameCanvas.bind("<Button-1>", ClickRadarPoint, add="+")
+        IsRadarClicked = True
+    
+def ClickRadarPoint(event):
+    World.StealFood(10)
+    UpdateFood()
+    Fodos = World.ScanRadiusAround(event.x // SizeOfTheBlock, event.y // SizeOfTheBlock, "food", 6, [-1], True) # (BMx, BMy, ObjType, Range, ignore=[-1], IgnoreMark = False)
+    Ants.AddSkanFood(Fodos)
+    ClickRadar()
+
+def ClickGoHome():
+    Ants.GoHomeEveryone()
+
+def ClickDoJobs():
+    Ants.NoGoHomeEveryone()
+    
 
 def TechDragStart(event): pass
     #print("TechDragStart")
@@ -963,6 +989,7 @@ FoodSpawnRate = 500
 AntSpin = 0
 StopSpin = True
 IsAttackClicked = False
+IsRadarClicked = False
 ListDelete = [] # Type, ID
 SizeOfTheWorld = 100
 SizeOfTheBlock = 30
@@ -1103,6 +1130,9 @@ Tiles = {"Grass": GrassImg, "Asphalt": AsphaltImg, "Sand": SandImg}
 AttackImg = PhotoImage(file="imgs/ATK.png").zoom(2,2)
 DefendImg = PhotoImage(file="imgs/DEF.png").zoom(2,2)
 NeutralImg = PhotoImage(file="imgs/NT.png").zoom(2,2)
+GoHomeImg = PhotoImage(file="imgs/HOM.png").zoom(2,2)
+JobImg = PhotoImage(file="imgs/JOB.png").zoom(2,2)
+SkanImg = PhotoImage(file="imgs/SKA.png").zoom(2,2)
 
 FoodTextures = { 11: FoodImg11,
 12: FoodImg12,
@@ -1303,10 +1333,16 @@ AttackDefend = Frame(master = mainwindow)
 AttackButton = Button(master= AttackDefend, image=AttackImg, command=ClickAttack)
 DefendButton = Button(master= AttackDefend, image=DefendImg, command=ClickDefence)
 NeutralButton = Button(master= AttackDefend, image=NeutralImg, command=ClickNeutral)
+RadarButton = Button(master= AttackDefend, image=SkanImg, command=ClickRadar)
+GoHomeButton = Button(master= AttackDefend, image=GoHomeImg, command=ClickGoHome)
+DoJobsButton = Button(master= AttackDefend, image=JobImg, command=ClickDoJobs)
 StateLabel = Label(master= AttackDefend, text="")
 AttackButton.grid(column=0, row=1)
 DefendButton.grid(column=1, row=1)
 NeutralButton.grid(column=2, row=1)
+RadarButton.grid(column=3, row=1)
+GoHomeButton.grid(column=4, row=1)
+DoJobsButton.grid(column=5, row=1)
 #Attack & Defend End
 
 #TechTreeFrame

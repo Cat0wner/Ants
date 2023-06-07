@@ -164,9 +164,9 @@ def ReturnAllMods():
     
 def ReturnMod(Target, Mod = ""):
     global Mods
-    print("ReturnMod")
-    print(Target)
-    print(Mod)
+    #print("ReturnMod")
+    #print(Target)
+    #print(Mod)
     if Mod == "":
         if str(Target) in Mods: return Mods[str(Target)]
         else: return {"Speed": 0, "Strenght": 0, "Health": 0}

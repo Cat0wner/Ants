@@ -622,10 +622,19 @@ def MoveAroundHome(Actor, GoAway = False):
         Actor.Move(HowToMove[0]+(60 * Actor.IDKWhereToGo), HowToMove[1])
 
 def AntAI(Actor):
+    global FodsSkand
     ###print(f"Ant {Actor.ID}, {Actor.Mind} is in state {Actor.State}")
     ####print(Actor)
     MyX = Actor.posx
     MyY = Actor.posy
+    if Actor.State == 418:
+        Home = HomeXY(Actor.HomeID)
+        if GetDistanceRaw(Actor.posx, Actor.posy, Home[0], Home[1]) < 3:
+            return 0
+        HowToMove = AutoMove(Actor.posx, Actor.posy, Home[0], Home[1])
+        Actor.Move(HowToMove[0], HowToMove[1])
+        return 0
+        
     if Actor.posx < 0 or Actor.posy < 0 or Actor.posx > SizeXSize or Actor.posy > SizeXSize:
         Actor.State = 416
     # BY PRIORITY
@@ -1105,11 +1114,14 @@ def AntAI(Actor):
 
     #FIND FOOD
     if (Actor.Mind == 2222):
-    
+        
         if Actor.State == 415:
-            ###print(f"Actor {Actor.ID} is Scout InHome")
-            ###print(f"Actor {Actor.ID} is Solder InHome and eating???")
+            print(f"Actor {Actor.ID} is Scout InHome")
             Actor.EatFood()
+            if FodsSkand: 
+                Actor.State = 408
+                Actor.FoodMemory = FodsSkand.pop()
+                return 0
             Homes = HomeXY()
             if GetDistanceRaw(Actor.posx, Actor.posy, Homes[0], Homes[1]) > 7:
                 Actor.State = 2222
@@ -1138,7 +1150,8 @@ def AntAI(Actor):
                 
         if Actor.State == 408:
             WPFound = ScanRadiusAround(Actor.BlockMapID[0], Actor.BlockMapID[1], "way", 2)
-            if WPFound:
+            FoodFound = ScanRadiusAround(Actor.BlockMapID[0], Actor.BlockMapID[1], "food", 2, [-1],True)
+            if WPFound and FoodFound:
                 Actor.State = 2222
                 ##print(f"879. Scout {Actor.ID} is Scout because there is WP")
                 ##print(WPFound[0])
@@ -1308,7 +1321,27 @@ def UpdateAntsCount(Ant, Count):
 def ReturnAntsCount():
     global AntsCount
     return AntsCount
+    
+def GoHomeEveryone():
+    global ListOfAnts
+    for Ant in ListOfAnts:
+        ListOfAnts[Ant].State = 418
+        
+def NoGoHomeEveryone():
+    global ListOfAnts
+    for Ant in ListOfAnts:
+        ListOfAnts[Ant].State = ListOfAnts[Ant].Mind
 
+def AddSkanFood(Fodos):
+    global FodsSkand
+    print(Fodos)
+    print(FodsSkand)
+    if Fodos:
+        for Food in Fodos:
+            if not Food in FodsSkand:
+                FodsSkand.append(Food)
+
+FodsSkand = []
 LastStandDistance = 30
 FoodToEnergy = 200
 MemorySize = 30
@@ -1333,8 +1366,8 @@ FoodToEnergy = 200
 AntsHeads = [["default", 1, 1, 1, 1, 1, 1], [3333, 6, 5, 2, 4, 8, 1], [1111, 1, 1, 1, 2, 2, 3], [2222, 0, 1, 1, 1, 1, 1, 1], [3333, 10, 6, 2, 5, 10, 1], [1111, 2, 2, 1, 5, 3, 5], [2222, 0, 1, 1, 1, 2, 1, 1]] # Name, HealthBonus, Attack, AttackRange, Cost, EnergyNeed, WorkEfficiency
 AntsBodies = [["default", 1, 2, 2, 1], ["armored", 6, 1, 12, 4], ["scout", 1, 4, 4, 3], ["worker2", 3, 2, 3, 2], ["scout2", 1, 6, 10, 6], ["solder3", 20, 1, 25, 10], ["worker3", 4, 3, 5, 3], ["scout3", 2, 7, 15, 7]] # Name, HealthBonus, SpeedBonus, Cost, EnergyNeed
 AntsBellies = [["default", 1, 1000, 0], ["light", -1, 1400, 1], ["worker", 0, 3000, 0], ["heavy", 4, 5000, -1], ["Solder2", 10, 7000, 0]] # Name, HealthBonus, EnergyStorage, SpeedBonus
-States = ["default",405,406,2222, 408,409, 1111, 410, 411,412,413, 414, 415, 3333, 416, 417]
-States2 = ["default","Attack","Defend",2222, "FoodFound","CreatingWay", 1111, "GoingWay", "WhereFood","NoFood","YesFood", "TakeFood", "InHome", 3333, "NeedFood", "Lost"]
+States = ["default",405,406,2222, 408,409, 1111, 410, 411,412,413, 414, 415, 3333, 416, 417, 418]
+States2 = ["default","Attack","Defend",2222, "FoodFound","CreatingWay", 1111, "GoingWay", "WhereFood","NoFood","YesFood", "TakeFood", "InHome", 3333, "NeedFood", "Lost", "HomeNOW"]
 #States2 = [default",Attack",Defend",Scout", FoodFound",CreatingWay", 1111, GoingWay", WhereFood",NoFood",YesFood", TakeFood", InHome", 3333, NeedFood", Lost"]
 AntSolder = [1, 1, 3]
 AntWorker = [2, 0, 2]
