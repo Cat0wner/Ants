@@ -124,7 +124,7 @@ class FoodPoint(WorldObject):
         #BlockMapList[self.BlockMapID[0]][self.BlockMapID[1]].RemoveObj(self.ID, self.ObjType)
 
 class Home(WorldObject):
-    def __init__(self, posx, posy, FoodInside=50000, SetAll = False, AntsIDs = []):
+    def __init__(self, posx, posy, FoodInside=400, SetAll = False, AntsIDs = []):
         super().__init__(posx = posx, posy = posy)
         #print(FoodInside)
         self.AntsIDs = []
@@ -444,52 +444,7 @@ def DestroyAll():
     BlockMapList.clear()
     BMExists = False
 
-# def GetBlockMapID(ObjectX, ObjectY, SizeOfTheWorld, SizeOfTheBlock):
-    # RangeOfWorld = SizeOfTheBlock * SizeOfTheWorld 
-    # if RangeOfWorld < ObjectX or RangeOfWorld < ObjectY or ObjectX < 0 or ObjectY < 0:
-        # return 0
-    # ID = (ObjectX // SizeOfTheBlock) + ((ObjectY // SizeOfTheBlock) * SizeOfTheBlock)
-    # return ID
 
-#def BlockMapGetID(ObjectX, ObjectY, SizeOfTheWorld, SizeOfTheBlock):
-#    RangeOfWorld = SizeOfTheBlock * SizeOfTheWorld 
-#    if RangeOfWorld < ObjectX or RangeOfWorld < ObjectY or ObjectX < 0 or ObjectY < 0:
-#        return 0
-#    ID = (ObjectX // SizeOfTheBlock) + ((ObjectY // SizeOfTheBlock) * SizeOfTheWorld * 10)
-#    return ID
-#
-#def BlockMapGetIDX(ObjectX, SizeOfTheWorld, SizeOfTheBlock):
-#    RangeOfWorld = SizeOfTheBlock * SizeOfTheWorld 
-#    if RangeOfWorld < ObjectX or ObjectX < 0:
-#        return 0
-#    ID = (ObjectX // SizeOfTheBlock)
-#    return ID
-#
-#def BlockMapGetIDY(ObjectY, SizeOfTheWorld, SizeOfTheBlock):
-#    RangeOfWorld = SizeOfTheBlock * SizeOfTheWorld 
-#    if RangeOfWorld < ObjectY or ObjectY < 0:
-#        return 0
-#    ID = ((ObjectY // SizeOfTheBlock) * SizeOfTheWorld * 10)
-#    return ID
-# Old block maps SUCKS
-# Why 00x00y id is better than x,y? I mean it somewhat easier to use, but fuck it
-
-
-'''
-# Testing
-count = 0
-##print(GetBlockMapID(25, 64, 10, 100))
-BlockMapList = []
-CreateBlockMaps(10, 10)
-##print(BlockMapList)
-for i in range(len(BlockMapList)):
-    ##print(BlockMapList[i])
-    for i2 in range(len(BlockMapList[i])):
-        #print("ID1 = {0}\nID2 = {1}\n X = {2}\n Y = {3}\n\n".format(i, i2, BlockMapList[i][i2].x, BlockMapList[i][i2].y))
-    count += 1
-#print(count)
-
-#print(ScanRadiusAround(5,5, "bug", 2))'''
 BMExists = False
 ListWPsDelete = []
 ListObjectsDelete = []

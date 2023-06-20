@@ -1,7 +1,4 @@
 import json
-# Это ОЧЕНЬ важный файл, пожалуйста, не удаляйте его без спросу.
-# Тэк тэк тэк, думаем над течами как программисты.
-# Короче, что у нас есть? Тиры! Конечно же, как же без tear 1 tech improvment!
 
 # All Worker Watcher Solder
 
@@ -65,7 +62,8 @@ def SetTechToDefault():
     AntsResearched = {"Worker1": 0, "Worker2": 0, "Worker3": 0, "Solder1": 0, "Solder2": 0, "Solder3": 0, "Watcher1": 0, "Watcher2": 0, "Watcher3": 0, }
     Tech = TechOpener()
     TechLevel = 1
-    for th in Tech: print(th)
+    OpenTechByDefault()
+    #for th in Tech: print(th)
     #print("Tech now default")
     #print("SetTechToDefault")
     
@@ -116,6 +114,7 @@ def OpenThisTechPls(TechID):
     Tech[TechID]["IsOpened"] = 1
     UpdateModsFromTech(Tech[TechID]["Mod"])
     DoAllTheCommands(Tech[TechID]["Comands"])
+    return 0
     #print("OpenThisTechPls")
     
 def ReturnListOfTech():
@@ -182,8 +181,8 @@ def ReturnTechLevel():
     return TechLevel
 
 def OpenTechByDefault():
-    OpenThisTechPls("AntWorker_1")
-    OpenThisTechPls("AntScout_1")
+    OpenThisTechPls("AntWorker")
+    OpenThisTechPls("AntScout")
     #print("Am i in console?")
     #print("OpenTechByDefault")
     
@@ -244,3 +243,4 @@ Mods = {"11": AllMods, "3333": SolderMods, "2222": ScoutMods, "1111": WorkerMods
 ModsCopy = Mods.copy()
 # So, when we first open this - all mods sets to default
 Tech = TechOpener()
+OpenTechByDefault()

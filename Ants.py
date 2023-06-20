@@ -380,7 +380,7 @@ def CreateAnt(HomeID=0, HeadID=0, BodyID=0, BellyID=0, SetAll = False, ID=0, x =
             AddAntToHome(SuperAntID, Cost)
             SuperAntID += 1
         else:
-            print("No Food?\n"+str(HomeFood(HomeID))+" food, need "+str(Cost))
+            #print("No Food?\n"+str(HomeFood(HomeID))+" food, need "+str(Cost))
             pass
     else:
         if not ID in ListOfAnts:
@@ -607,6 +607,9 @@ def ChooseWPRandom(WPList):
     # THIS IS SO STUPID WHAT THE FUCK MAN WHYYYYYYYYY??????
     # Please LEAVE CODING NOW!!!
     # Or at least use NumPy
+    
+    # Как это работает?
+    
     while RandWeight > 0:
         RandWeight -= WeightList[ID]
         ID+=1
@@ -1116,7 +1119,7 @@ def AntAI(Actor):
     if (Actor.Mind == 2222):
         
         if Actor.State == 415:
-            print(f"Actor {Actor.ID} is Scout InHome")
+            #print(f"Actor {Actor.ID} is Scout InHome")
             Actor.EatFood()
             if FodsSkand: 
                 Actor.State = 408
@@ -1334,8 +1337,8 @@ def NoGoHomeEveryone():
 
 def AddSkanFood(Fodos):
     global FodsSkand
-    print(Fodos)
-    print(FodsSkand)
+    #print(Fodos)
+    #print(FodsSkand)
     if Fodos:
         for Food in Fodos:
             if not Food in FodsSkand:
@@ -1344,7 +1347,7 @@ def AddSkanFood(Fodos):
 FodsSkand = []
 LastStandDistance = 30
 FoodToEnergy = 200
-MemorySize = 30
+MemorySize = 15
 ###print("AI loaded!")
 SizeOfTheWorld = 100
 SizeOfTheBlock = 30
@@ -1367,7 +1370,7 @@ AntsHeads = [["default", 1, 1, 1, 1, 1, 1], [3333, 6, 5, 2, 4, 8, 1], [1111, 1, 
 AntsBodies = [["default", 1, 2, 2, 1], ["armored", 6, 1, 12, 4], ["scout", 1, 4, 4, 3], ["worker2", 3, 2, 3, 2], ["scout2", 1, 6, 10, 6], ["solder3", 20, 1, 25, 10], ["worker3", 4, 3, 5, 3], ["scout3", 2, 7, 15, 7]] # Name, HealthBonus, SpeedBonus, Cost, EnergyNeed
 AntsBellies = [["default", 1, 1000, 0], ["light", -1, 1400, 1], ["worker", 0, 3000, 0], ["heavy", 4, 5000, -1], ["Solder2", 10, 7000, 0]] # Name, HealthBonus, EnergyStorage, SpeedBonus
 States = ["default",405,406,2222, 408,409, 1111, 410, 411,412,413, 414, 415, 3333, 416, 417, 418]
-States2 = ["default","Attack","Defend",2222, "FoodFound","CreatingWay", 1111, "GoingWay", "WhereFood","NoFood","YesFood", "TakeFood", "InHome", 3333, "NeedFood", "Lost", "HomeNOW"]
+StatesOld = ["default","Attack","Defend", "Scout", "FoodFound","CreatingWay", "Worker", "GoingWay", "WhereFood","NoFood","YesFood", "TakeFood", "InHome", "Solder", "NeedFood", "Lost", "HomeNOW"]
 #States2 = [default",Attack",Defend",Scout", FoodFound",CreatingWay", 1111, GoingWay", WhereFood",NoFood",YesFood", TakeFood", InHome", 3333, NeedFood", Lost"]
 AntSolder = [1, 1, 3]
 AntWorker = [2, 0, 2]

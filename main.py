@@ -11,42 +11,7 @@ import json
 import glob
 import PIL
 
-#def DeleteMePls(ObjType, ID):
-#    global ListDelete
-#    ListDelete.append([ObjType, ID])
 
-'''class LoadFrame(Frame):
-    def __init__():
-        global mainwindow
-        super().__init__(master = mainwindow, width=200)
-        SaveNames = FindSaves()
-        for SaveName in SaveNames:
-            File = open(SaveName)
-            NameOfSave = File.readline()
-            File.close()
-            Button(master=self, text=NameOfSave,font=("ComicSansMS", 20, "bold"), command=lambda: LoadThisSave(SaveName)).pack()
-        
-'''
-'''class TechTreeButton(Button):
-    def __init__(self, TechID, m = None, w = 30, h = 7, txt = "TechName", row = 0, column = 0, desc = "test"):
-        #super().__init__(master=m, width=w, height=h, text=Text, font=("ComicSansMS", 12, "bold"), command= lambda: TechButtonClick(TechID))
-        self.TechID = TechID
-        self.row = row
-        self.column = column
-        self.desc = desc'''
-# Смотрите кто опять проебался как лох ^
-
-
-'''def FrameLoadCreate():
-    global LoadScreen
-    #global LoadScroll
-    FrameLoad = Frame(master = LoadScreen, width=350)
-    SaveNames = FindSaves()
-    for SaveName in SaveNames:
-        File = open(SaveName)
-        NameOfSave = File.readline()
-        File.close()
-        Button(master=FrameLoad, width=20, text=NameOfSave,font=("ComicSansMS", 20, "bold"), command=lambda: LoadThisSave(SaveName)).pack()'''
 
 def UpdateHome():
     global GameCanvas
@@ -55,8 +20,7 @@ def UpdateHome():
     GameCanvas.itemconfigure(HomeRendered, image=HomesImgs[TechLevel])
     
     
-# eto кошмар.
-# просто ужасно
+
 def UpdateAntButtons():
     #print("UpdateAntButtons")
     global ButtonSolder
@@ -605,6 +569,7 @@ def StartNewGame(IsLoad = False):
     GameCanvas.place(x=xeee, y=yeee)
     #print(GameCanvas.winfo_geometry())
     #print("Starting...")
+    TutorialFrame.place(relx=0.5, rely=0.5, anchor=CENTER)
     UpdateAntButtons()
     UpdateEveryTick()
 
@@ -974,8 +939,37 @@ def ButtonTechClick(TechLevel):
     global TechLevelChoosen
     TechLevelChoosen = TechLevel
     UpdateAntButtons()
+
+def NextTutor():
+    global TutorImgs
+    global TutorTexts
+    global TutorialImgLabel
+    global TutorialLabel
+    global TutorialNum
+    TutorialNum += 1
+    if not TutorialNum in TutorTexts: TutorialNum = 1
+    TutorialImgLabel.configure(image=TutorImgs[TutorialNum])
+    TutorialLabel.configure(text=TutorTexts[TutorialNum])
+
+def PrevTutor():
+    global TutorImgs
+    global TutorTexts
+    global TutorialImgLabel
+    global TutorialLabel
+    global TutorialNum
+    TutorialNum -= 1
+    if not TutorialNum in TutorTexts: TutorialNum = 4
+    TutorialImgLabel.configure(image=TutorImgs[TutorialNum])
+    TutorialLabel.configure(text=TutorTexts[TutorialNum])
+    
+    
+def HideTutor():
+    global TutorialFrame
+    TutorialFrame.place_forget()
+    
     
 # Params
+TutorialNum = 1
 TechLevelChoosen = 1
 TechColors = {-2: "green", -1: "red", 1: "yellow"}
 FoodCounter = 0
@@ -1134,6 +1128,7 @@ GoHomeImg = PhotoImage(file="imgs/HOM.png").zoom(2,2)
 JobImg = PhotoImage(file="imgs/JOB.png").zoom(2,2)
 SkanImg = PhotoImage(file="imgs/SKA.png").zoom(2,2)
 
+
 FoodTextures = { 11: FoodImg11,
 12: FoodImg12,
 21: FoodImg21,
@@ -1223,6 +1218,13 @@ AntTextures = {110: AntToDownImg.subsample(2,2),
 2302: AntToRightImg3.subsample(3,3),
 2301: AntToLeftImg3.subsample(3,3)}
 
+TutImg1 = PhotoImage(file="imgs/Tut1.png")
+TutImg2 = PhotoImage(file="imgs/Tut2.png")
+TutImg3 = PhotoImage(file="imgs/Tut3.png")
+TutImg4 = PhotoImage(file="imgs/Tut4.png")
+TutorImgs = {1:TutImg1,2:TutImg2,3:TutImg3,4:TutImg4}
+TutorTexts = {1:"Для управления игровым процессом предоставлены две панели:\nПанель управления и Панель приказов",2:"В панели управления расположены кнопки создания муравьёв, \n а в левой её части располагается выбор технологического уровня",3:"На панели приказов расположены следующие приказы: \n Атака точки, защита, нейтральный режим.\nА так же сканер, возврат домой и возврат к работе.",4:"В технологическом меню возможно улучшить технологии\nИсследованные технологии обозначены зелёным. Не открытые - красным"}
+
 #btnstech
 OpenTechButton = PhotoImage(file="imgs/Open200x100.png")
 ClosedTechButton = PhotoImage(file="imgs/Closed200x100.png")
@@ -1292,16 +1294,7 @@ ButtonBackToMenu = Button(master=LoadScreen, text="Назад",font=("ComicSansM
 ScrollY = 0
 FrameLoad = FrameLoadCreate()
 FrameLoad.place(relx=.5, y=0, anchor= CENTER)
-'''FrameLoad = Frame(master = LoadScreen, width=350)
-SaveNames = FindSaves()
-for SaveName in SaveNames:
-    File = open(SaveName)
-    NameOfSave = File.readline()
-    File.close()
-    Button(master=FrameLoad, text=NameOfSave,font=("ComicSansMS", 20, "bold"), command=lambda: LoadThisSave(SaveName)).pack()
 
-ButtonBackToMenu.place(x=10, y=10)
-FrameLoad.place(relx=.5, rely=.5, anchor= CENTER)'''
 ## End load frame
 
 # LevelFrame
@@ -1356,6 +1349,22 @@ mainwindow.bind("<MouseWheel>", MoveTechFrameWithMouse)
 CloseTech = Button(master = BigTechFrame, text = "X", command=HideTech)
 #CloseTech.pack(anchor=NE, ipadx=1, ipady=1)
 #TechTreeFrameEnd
+
+#Tutorial Frame
+TutorialFrame = Frame(master=mainwindow, bg="#FFFFFF", width=800, height=600)
+TutorialLabel = Label(master=TutorialFrame, text=TutorTexts[1])
+TutorialImgLabel = Label(master=TutorialFrame, image=TutorImgs[1])
+NextTutorButton = Button(master = TutorialFrame, text = ">", command=NextTutor)
+PrevTutorButton = Button(master = TutorialFrame, text = "<", command=PrevTutor)
+CloseTutorButton = Button(master = TutorialFrame, text = "X", command=HideTutor)
+TutorialLabel.pack()
+TutorialImgLabel.pack()
+NextTutorButton.place(relx=1.0, rely=1.0, anchor=SE)
+PrevTutorButton.place(relx=0.0, rely=1.0, anchor=SW)
+CloseTutorButton.place(relx=1.0, rely=0.0, anchor=NE)
+
+#TutorialFrameEnd
+
 UpdateAntButtons()
 print("Startup sucsessfull!")
 mainwindow.mainloop()
